@@ -8,14 +8,14 @@
  *
  * http://api.jqueryui.com/category/theming/
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=%23helperContainer&folderName=helperContainer&bgImgOpacityError=&bgImgOpacityHighlight=&bgImgOpacityActive=&bgImgOpacityHover=&bgImgOpacityDefault=&bgImgOpacityContent=&bgImgOpacityHeader=&cornerRadiusShadow=8px&offsetLeftShadow=0px&offsetTopShadow=0px&thicknessShadow=5px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=%23666666&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=%23aaaaaa&iconColorError=%23cc0000&fcError=%235f3f3f&borderColorError=%23f1a899&bgTextureError=flat&bgColorError=%23fddfdf&iconColorHighlight=%23777620&fcHighlight=%23777620&borderColorHighlight=%23dad55e&bgTextureHighlight=flat&bgColorHighlight=%23fffa90&iconColorActive=%23e2e2e2&fcActive=%23e2e2e2&borderColorActive=%238a5609&bgTextureActive=flat&bgColorActive=%235a3806&iconColorHover=%23e2e2e2&fcHover=%23e2e2e2&borderColorHover=%238a5609&bgTextureHover=flat&bgColorHover=%23724708&iconColorDefault=%23e2e2e2&fcDefault=%23e2e2e2&borderColorDefault=%238a5609&bgTextureDefault=flat&bgColorDefault=%235a3806&iconColorContent=%23e2e2e2&fcContent=%23e2e2e2&borderColorContent=%23111&bgTextureContent=flat&bgColorContent=%23111&iconColorHeader=%23e2e2e2&fcHeader=%23e2e2e2&borderColorHeader=%23222&bgTextureHeader=flat&bgColorHeader=%23222&cornerRadius=5px&fwDefault=normal&fsDefault=1em&ffDefault=Arial%2CHelvetica%2Csans-serif
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=%23helperContainer&folderName=helperContainer&bgImgOpacityError=&bgImgOpacityHighlight=&bgImgOpacityActive=&bgImgOpacityHover=&bgImgOpacityDefault=&bgImgOpacityContent=&bgImgOpacityHeader=&cornerRadiusShadow=8px&offsetLeftShadow=0px&offsetTopShadow=0px&thicknessShadow=5px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=%23666666&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=%23aaaaaa&iconColorError=%23cc0000&fcError=%235f3f3f&borderColorError=%23f1a899&bgTextureError=flat&bgColorError=%23fddfdf&iconColorHighlight=%23777620&fcHighlight=%23777620&borderColorHighlight=%23dad55e&bgTextureHighlight=flat&bgColorHighlight=%23fffa90&iconColorActive=%23e2e2e2&fcActive=%23e2e2e2&borderColorActive=%234c4c7d&bgTextureActive=flat&bgColorActive=%23133d62&iconColorHover=%23e2e2e2&fcHover=%23e2e2e2&borderColorHover=%234c4c7d&bgTextureHover=flat&bgColorHover=%23133d62&iconColorDefault=%23e2e2e2&fcDefault=%23e2e2e2&borderColorDefault=%234c4c7d&bgTextureDefault=flat&bgColorDefault=%230f304d&iconColorContent=%23e2e2e2&fcContent=%23e2e2e2&borderColorContent=%230e0f10&bgTextureContent=flat&bgColorContent=%230e0f10&iconColorHeader=%23e2e2e2&fcHeader=%23e2e2e2&borderColorHeader=%23222&bgTextureHeader=flat&bgColorHeader=%23222&cornerRadius=0px&fwDefault=normal&fsDefault=1em&ffDefault=%22FontinSmallcaps%22%2CHelvetica%2Csans-serif
  */
 
 
 /* Component containers
 ----------------------------------*/
 #helperContainer .ui-widget {
-	font-family: Arial,Helvetica,sans-serif;
+	font-family: "FontinSmallcaps",Helvetica,sans-serif;
 	font-size: 1em;
 }
 #helperContainer .ui-widget .ui-widget {
@@ -25,15 +25,15 @@
 #helperContainer .ui-widget select,
 #helperContainer .ui-widget textarea,
 #helperContainer .ui-widget button {
-	font-family: Arial,Helvetica,sans-serif;
+	font-family: "FontinSmallcaps",Helvetica,sans-serif;
 	font-size: 1em;
 }
 #helperContainer .ui-widget.ui-widget-content {
-	border: 1px solid #8a5609;
+	border: 1px solid #4c4c7d;
 }
 #helperContainer .ui-widget-content {
-	border: 1px solid #111;
-	background: #111;
+	border: 1px solid #0e0f10;
+	background: #0e0f10;
 	color: #e2e2e2;
 }
 #helperContainer .ui-widget-content a {
@@ -60,8 +60,8 @@
 works properly when clicked or hovered */
 html #helperContainer .ui-button.ui-state-disabled:hover,
 html #helperContainer .ui-button.ui-state-disabled:active {
-	border: 1px solid #8a5609;
-	background: #5a3806;
+	border: 1px solid #4c4c7d;
+	background: #0f304d;
 	font-weight: normal;
 	color: #e2e2e2;
 }
@@ -83,8 +83,8 @@ a:visited#helperContainer .ui-button,
 #helperContainer .ui-widget-header .ui-state-focus,
 #helperContainer .ui-button:hover,
 #helperContainer .ui-button:focus {
-	border: 1px solid #8a5609;
-	background: #724708;
+	border: 1px solid #4c4c7d;
+	background: #133d62;
 	font-weight: normal;
 	color: #e2e2e2;
 }
@@ -111,14 +111,14 @@ a#helperContainer .ui-button:focus {
 a#helperContainer .ui-button:active,
 #helperContainer .ui-button:active,
 #helperContainer .ui-button.ui-state-active:hover {
-	border: 1px solid #8a5609;
-	background: #5a3806;
+	border: 1px solid #4c4c7d;
+	background: #133d62;
 	font-weight: normal;
 	color: #e2e2e2;
 }
 #helperContainer .ui-icon-background,
 #helperContainer .ui-state-active .ui-icon-background {
-	border: #8a5609;
+	border: #4c4c7d;
 	background-color: #e2e2e2;
 }
 #helperContainer .ui-state-active a,
@@ -410,25 +410,25 @@ a#helperContainer .ui-button:active,
 #helperContainer .ui-corner-top,
 #helperContainer .ui-corner-left,
 #helperContainer .ui-corner-tl {
-	border-top-left-radius: 5px;
+	border-top-left-radius: 0px;
 }
 #helperContainer .ui-corner-all,
 #helperContainer .ui-corner-top,
 #helperContainer .ui-corner-right,
 #helperContainer .ui-corner-tr {
-	border-top-right-radius: 5px;
+	border-top-right-radius: 0px;
 }
 #helperContainer .ui-corner-all,
 #helperContainer .ui-corner-bottom,
 #helperContainer .ui-corner-left,
 #helperContainer .ui-corner-bl {
-	border-bottom-left-radius: 5px;
+	border-bottom-left-radius: 0px;
 }
 #helperContainer .ui-corner-all,
 #helperContainer .ui-corner-bottom,
 #helperContainer .ui-corner-right,
 #helperContainer .ui-corner-br {
-	border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 0px;
 }
 
 /* Overlays */
