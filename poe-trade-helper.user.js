@@ -79,6 +79,11 @@ function ArrayIndexMove(array, from, to) {
         update: RearrangeBookmarksFolder
     });
     
+    let addBookmarkModal = $('<div id="addBookmarkModal"><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName" style="width: 100%"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" style="width: 100%"/></div>');
+    addBookmarkModal.dialog({
+        autoOpen: false
+    });
+    
     UpdateBookmarks();
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
@@ -120,7 +125,7 @@ function ArrayIndexMove(array, from, to) {
     function UpdateBookmarks()
     {
         window.localStorage.setItem(STORAGE_HELPER_BOOKMARKS, JSON.stringify(bookmarks));
-                
+        
         for (const folder of bookmarks)
         {
             if ($('#folderContainer').find('div[folder-id="' + folder.id + '"]').length === 0)
@@ -135,14 +140,28 @@ function ArrayIndexMove(array, from, to) {
                 header.append(removeButton);
                 removeButton.on('click', RemoveBookmarkFolder);
                 
-                folderNode.append('<div style="display:flex;flex-direction:column">abcede<div class="ui-button" id="addBookmarkButton">Add bookmark</div></div>');
-                folderNode.find('#addBookmarkButton').on('click', AddBookmark);
+                folderNode.append('<div style="display:flex;flex-direction:column"><div class="bookmarksContainer" style="display:flex;flex-direction:column"></div><div class="ui-button addBookmarkButton">Add bookmark</div></div>');
+                folderNode.find('div.addBookmarkButton').on('click', AddBookmark);
                 
                 folderNode.accordion({
                     active: false,
                     collapsible: true,
-                    header: 'h3'
+                    header: 'h3',
+                    heightStyle: 'content'
                 });
+            }
+            
+            for (const bm of folder.bookmarks)
+            {
+                if ($('div[folder-id="' + folder.id + '"] .bookmarksContainer div[bookmark-id="' + bm.id + '"]').length === 0)
+                {
+                    let container = $('div[folder-id="' + folder.id + '"] .bookmarksContainer');
+                    let bookmarkNode = $('<div bookmark-id="' + bm.id + '" folder-id="' + folder.id + '" style="display:flex;align-items:center"><a href="' + bm.url + '" style="flex-grow:1"><div style="background: #222; border: 1px solid #555; padding: .2em .4em; margin: .2em .1em">' + bm.name + '</div></a></div>');
+                    container.append(bookmarkNode);
+                    let removeButton = $('<button class="ui-button"><span class="ui-icon ui-icon-trash">Remove</span></button>');
+                    bookmarkNode.append(removeButton);
+                    removeButton.on('click', RemoveBookmark);
+                }
             }
         }
     }
@@ -283,17 +302,62 @@ function ArrayIndexMove(array, from, to) {
     
     function AddBookmark(event)
     {
-        $('<div><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" value="' + window.location.href + '"/></div>').dialog({
+        let folderID = event.currentTarget.parentElement.parentElement.getAttribute('folder-id');
+        
+        addBookmarkModal.dialog('option', {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
+            open: () => {
+                addBookmarkModal.find('#bookmark_newURL').val(window.location.href);
+            },
+            width: 400,
             buttons: [
                 {
                     text: 'Add',
                     click: () => {
+                        let name = addBookmarkModal.find('#bookmark_newName').val();
+                        let url = addBookmarkModal.find('#bookmark_newURL').val();
                         
+                        if (name && url)
+                        {
+                            for (const folder of bookmarks)
+                            {
+                                if (folder.id === folderID)
+                                {
+                                    folder.bookmarks.push({ id: uuidv4(), name: name, url: url });
+                                    UpdateBookmarks();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             ]
         });
+        addBookmarkModal.dialog('open');
+    }
+    
+    function RemoveBookmark(event)
+    {
+        let bookmarkNode = event.currentTarget.parentElement;
+        let folderID = bookmarkNode.getAttribute('folder-id');
+        let bookmarkID = bookmarkNode.getAttribute('bookmark-id');
+        
+        for (const folder of bookmarks)
+        {
+            if (folder.id === folderID)
+            {
+                for (const bm of folder.bookmarks)
+                {
+                    if (bm.id === bookmarkID)
+                    {
+                        folder.bookmarks.splice(folder.bookmarks.indexOf(bm), 1);
+                        bookmarkNode.remove();
+                        UpdateBookmarks();
+                        break;
+                    }
+                }
+            }
+        }
     }
 })();
