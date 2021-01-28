@@ -55,9 +55,9 @@ function ArrayIndexMove(array, from, to) {
     helperContainer.append('<button id="toggleHelperButton" class="ui-button">Show/Hide</button><br/>' + 
                            '<div id="helper_tabs" style="flex-grow: 1; display: flex; flex-direction: column">' + 
                            '<ul>' +
-                           '<li><a href="#tabs-bookmark">Bookmarks</a></li>' +
-                           '<li><a href="#tabs-pins">Pins</a></li>' +
-                           '<li><a href="#tabs-history">Pin History</a></li>' +
+                           '<li><a href="#tabs-bookmark"><span class="ui-icon ui-icon-folder-open"></span>Bookmarks</a></li>' +
+                           '<li><a href="#tabs-pins"><span class="ui-icon ui-icon-pin-s"></span>Pins</a></li>' +
+                           '<li><a href="#tabs-history"><span class="ui-icon ui-icon-calendar"></span>History</a></li>' +
                            '</ul>' +
                            '<div id="tabs-bookmark" style="overflow-y: auto; padding: 0 0.6em; flex-grow: 1"></div>' +
                            '<div id="tabs-pins" style="overflow-y: auto; padding: 0 0.6em; flex-grow: 1"></div>' +
@@ -66,10 +66,10 @@ function ArrayIndexMove(array, from, to) {
     $('body').append(helperContainer);
     $('#helper_tabs').tabs();
     
-    let addBookmarkFolderForm = $('<form></form>');
-    addBookmarkFolderForm.append('<label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><button type="submit" class="ui-button">Add</button><hr/>');
-    addBookmarkFolderForm.on('submit', AddBookmarkFolder);
-    $('#tabs-bookmark').append(addBookmarkFolderForm);
+    let addBookmarkFolderButton = $('<button class="ui-button">Create new folder</button>');
+    addBookmarkFolderButton.on('click', AddBookmarkFolder);
+    $('#tabs-bookmark').append(addBookmarkFolderButton);
+    $('#tabs-bookmark').append('<hr/>');
     $('#tabs-bookmark').append('<div id="folderContainer"></div>');
 
     $('#folderContainer').sortable({
@@ -77,6 +77,11 @@ function ArrayIndexMove(array, from, to) {
         cursor: "move",
         handle: 'div.moveFolder',
         update: RearrangeBookmarksFolder
+    });
+    
+    let addBookmarkFolderModal = $('<div id="addBookmarkFolderModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62"/></div>');
+    addBookmarkFolderModal.dialog({
+        autoOpen: false
     });
     
     let addBookmarkModal = $('<div id="addBookmarkModal"><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName" style="width: 100%"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" style="width: 100%"/></div>');
@@ -133,7 +138,7 @@ function ArrayIndexMove(array, from, to) {
                 let folderNode = $('<div folder-id="' + folder.id + '"></div>');
                 $('#folderContainer').append(folderNode);
                 
-                let header = $('<h3 style="display: flex; align-items: center; padding: .2em">' + folder.name + '</h3>');
+                let header = $('<h3 style="display: flex; align-items: center; padding: .2em; background-color: ' + folder.bgColor + '">' + folder.name + '</h3>');
                 folderNode.append(header);
                 header.append('<div class="ui-button moveFolder" style="margin-left: auto"><span class="ui-icon ui-icon-caret-2-n-s">Move</span></div>');
                 let removeButton = $('<button class="ui-button"><span class="ui-icon ui-icon-trash">Remove</span></button>');
@@ -273,11 +278,30 @@ function ArrayIndexMove(array, from, to) {
     
     function AddBookmarkFolder(event)
     {
-        event.preventDefault();
-        bookmarks.push({ id: uuidv4(), name: $('#bookmark_newFolderName').val(), bookmarks: [] });
-        $('#bookmark_newFolderName').val('');
-        
-        UpdateBookmarks();
+        addBookmarkFolderModal.dialog('option', {
+            appendTo: '#helperContainer',
+            title: 'Create new folder',
+            width: 400,
+            buttons: [
+                {
+                    text: 'Add',
+                    click: () => {
+                        let name = addBookmarkFolderModal.find('#bookmark_newFolderName').val();
+                        let color = addBookmarkFolderModal.find('#bookmark_newFolderColor').val();
+                        
+                        if (name && color)
+                        {
+                            bookmarks.push({ id: uuidv4(), name: name, bgColor: color, bookmarks: [] });
+                            $('#bookmark_newFolderName').val('');
+
+                            UpdateBookmarks();
+                            addBookmarkFolderModal.dialog('close');
+                        }
+                    }
+                }
+            ]
+        });
+        addBookmarkFolderModal.dialog('open');
     }
     
     function RemoveBookmarkFolder(event)
@@ -326,6 +350,7 @@ function ArrayIndexMove(array, from, to) {
                                 {
                                     folder.bookmarks.push({ id: uuidv4(), name: name, url: url });
                                     UpdateBookmarks();
+                                    addBookmarkModal.dialog('close');
                                     break;
                                 }
                             }
