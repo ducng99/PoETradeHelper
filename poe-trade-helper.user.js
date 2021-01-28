@@ -43,7 +43,7 @@ function ArrayIndexMove(array, from, to) {
         }
     </style>`);
 
-    var rawPriceData = null;
+    var rawPriceData = [];
     var helperIsOpen = true;
     var bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
     if (bookmarks === null)
@@ -79,7 +79,7 @@ function ArrayIndexMove(array, from, to) {
         update: RearrangeBookmarksFolder
     });
     
-    let addBookmarkFolderModal = $('<div id="addBookmarkFolderModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62"/></div>');
+    let addBookmarkFolderModal = $('<div id="addBookmarkFolderModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62" style="padding: 0; width: 50px; height: 50px"/></div>');
     addBookmarkFolderModal.dialog({
         autoOpen: false
     });
