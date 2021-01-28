@@ -6,7 +6,7 @@
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
 // @require      https://code.jquery.com/jquery-3.5.1.min.js
-// @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
+// @require      https://ducng99.github.io/PoETradeHelper/jquery-ui/jquery-ui.min.js
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -15,22 +15,22 @@ var $ = jQuery;
 var rawPriceData = null;
 var helperIsOpen = true;
 
-let helperContainer = $('<div style="position: fixed; right: 0; top: 0; height: 100vh; background-color: #000000aa; width: 370px"></div>');
-helperContainer.append('<button id="toggleHelperButton" style="background-color: #111"><span>Show/Hide</span></button><br/>' + 
-                       '<div id="helper_tabs" style="height: 95%">' + 
+let helperContainer = $('<div style="position: fixed; right: 0; top: 0; height: 100vh; background-color: #000000aa; width: 370px" id="helperContainer"></div>');
+helperContainer.append('<button id="toggleHelperButton" class="ui-button ui-widget ui-corner-all">Show/Hide</button><br/>' + 
+                       '<div id="helper_tabs" style="height: 97%">' + 
                        '<ul>' +
                        '<li><a href="#tabs-bookmark">Bookmarks</a></li>' +
                        '<li><a href="#tabs-pins">Pins</a></li>' +
                        '<li><a href="#tabs-history">Pin History</a></li>' +
                        '</ul>' +
-                       '<div id="tabs-bookmark" style="height: 100%; overflow-y: auto"></div>' +
-                       '<div id="tabs-pins" style="height: 100%; overflow-y: auto"></div>' +
+                       '<div id="tabs-bookmark" style="height: 95%; overflow-y: auto; padding: 0.6em"></div>' +
+                       '<div id="tabs-pins" style="height: 95%; overflow-y: auto; padding: 0.6em"></div>' +
                        '</div>');
 
 (function() {
     'use strict';
     
-    $('head').append('<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>');
+    $('head').append('<link rel="stylesheet" href="https://ducng99.github.io/PoETradeHelper/jquery-ui/jquery-ui.min.css"/>');
     
     setTimeout(() => {
         $('div#app > div.content').css('width', 'calc(100% - 370px)');
@@ -38,6 +38,8 @@ helperContainer.append('<button id="toggleHelperButton" style="background-color:
         $('#helper_tabs').tabs();
 
         document.querySelector('#toggleHelperButton').addEventListener('click', ToggleHelper);
+    
+        UpdatePrices();
     }, 2000);
     
     setInterval(() => {
@@ -54,7 +56,6 @@ helperContainer.append('<button id="toggleHelperButton" style="background-color:
         }
     }, 3000);
     
-    UpdatePrices();
     setInterval(UpdatePrices, 120000);
 })();
 
@@ -80,22 +81,46 @@ function ToggleHelper()
 function AddToBookmark(event)
 {
     let resultBox = event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement;
-    let itemShowcase = resultBox.querySelector('div.itemPopupContainer').cloneNode(true);
+    let itemShowcase = $(resultBox).find('div.itemPopupContainer').clone(true);
+    $(itemShowcase).css('margin', '0px');
+    $(itemShowcase).css('margin-top', '0.5em');
     let [price, currency, chaosEquiv] = GetPrice(resultBox.querySelector('span[data-field="price"]'));
     
     let bmContainer = $('<div></div>');
-    bmContainer.append($('<button class="removeBM" style="background-color: #111">Remove</button>'));
     bmContainer.append(itemShowcase);
-    bmContainer.append($('<div style="padding: 15px; background-color: #000">Price: ' + price + ' ' + currency + (chaosEquiv ? ' &#8776; ' + chaosEquiv + 'c' : '') + '</div><hr style="margin: 0"/>'));
     
-    $(bmContainer).find('.removeBM').on('click', RemoveBookmark);
+    let optionsPanel = $('<div style="padding: 1em; background-color: #000">Price: ' + price + ' ' + currency + (chaosEquiv ? ' &#8776; ' + chaosEquiv + 'c' : '') + '<br/></div>');
+    let removeButton = $('<button class="ui-button ui-widget ui-corner-all">Remove</button>');
+    optionsPanel.append(removeButton);
+    let scrollToButton = $('<button class="ui-button ui-widget ui-corner-all">Scroll to</button>');
+    optionsPanel.append(scrollToButton);
     
-    $('#tabs-bookmark').append(bmContainer);
+    bmContainer.append(optionsPanel);
+    bmContainer.append('<hr style="margin: 0"/>');
+    
+    removeButton.on('click', RemoveBookmark);
+    scrollToButton.on('click', () => {
+        let boxRect = resultBox.getBoundingClientRect();
+        
+        let windowPadding = Math.floor(window.innerHeight / 2 - boxRect.height / 2);
+        let offset = Math.floor(boxRect.top - windowPadding);
+        if (Math.floor(boxRect.top) != windowPadding)
+        {
+            window.scrollBy(0, offset);
+            resultBox.style.transition = 'background 0.5s linear';
+            resultBox.style.background = '#ffffff50';
+            setTimeout(() => {
+                resultBox.style.background = '';
+            }, 500);
+        }
+    });
+    
+    $('#tabs-pins').append(bmContainer);
 }
 
 function RemoveBookmark(event)
 {
-    event.currentTarget.parentElement.remove();
+    event.currentTarget.parentElement.parentElement.remove();
 }
 
 function GetPrice(dom)
