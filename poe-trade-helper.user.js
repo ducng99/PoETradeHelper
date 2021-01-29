@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.3
+// @version      1.0.4
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -41,17 +41,17 @@ function ProcessTime(time) {
     if (timeDiff < 1000 * 60 * 60) // less than 1 hour
     {
         let min = Math.round(timeDiff / 1000 / 60);
-        return min + ' minute' + (min === 1 ? '' : 's') + ' ago';
+        return min + ' minute' + (min <= 1 ? '' : 's') + ' ago';
     }
     else if (timeDiff < 1000 * 60 * 60 * 24) // less than a day
     {
         let hour = Math.round(timeDiff / 1000 / 60 / 60);
-        return hour + ' hour' + (hour === 1 ? '' : 's') + ' ago';
+        return hour + ' hour' + (hour <= 1 ? '' : 's') + ' ago';
     }
     else if (timeDiff < 1000 * 60 * 60 * 24 * new Date().getDate()) // less than a month
     {
         let days = Math.round(timeDiff / 1000 / 60 / 60 / 24);
-        return days + ' day' + (days === 1 ? '' : 's') + ' ago';
+        return days + ' day' + (days <= 1 ? '' : 's') + ' ago';
     }
     
     return 'a long time ago';
@@ -90,11 +90,13 @@ function ProcessTime(time) {
     if (bookmarks === null)
     {
         bookmarks = [];
+        window.localStorage.setItem(STORAGE_HELPER_BOOKMARKS, JSON.stringify(bookmarks));
     }
     var history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
     if (history === null)
     {
         history = [];
+        window.localStorage.setItem(STORAGE_HELPER_HISTORY, JSON.stringify(history));
     }
 
     let helperContainer = $('<div style="display: flex; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; background-color: #000b; width: 370px" id="helperContainer"></div>');
@@ -394,6 +396,7 @@ function ProcessTime(time) {
                         
                         if (name && color)
                         {
+                            bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
                             bookmarks.push({ id: uuidv4(), name: name, bgColor: color, bookmarks: [] });
                             $('#bookmark_newFolderName').val('');
 
@@ -410,8 +413,9 @@ function ProcessTime(time) {
     function RemoveBookmarkFolder(event)
     {
         let folderNode = event.currentTarget.parentElement.parentElement;
-        
         let folderID = folderNode.getAttribute("folder-id");
+        
+        bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
         
         for (const folder of bookmarks)
         {
@@ -447,6 +451,8 @@ function ProcessTime(time) {
                         
                         if (name && url)
                         {
+                            bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
+                            
                             for (const folder of bookmarks)
                             {
                                 if (folder.id === folderID)
@@ -470,6 +476,8 @@ function ProcessTime(time) {
         let bookmarkNode = event.currentTarget.parentElement;
         let folderID = bookmarkNode.getAttribute('folder-id');
         let bookmarkID = bookmarkNode.getAttribute('bookmark-id');
+        
+        bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
         
         for (const folder of bookmarks)
         {
@@ -497,6 +505,7 @@ function ProcessTime(time) {
                 if (/*$('div.resultset').children().length > 0*/ RegExp('/trade/search/\\w+/\\w+').test(window.location.pathname))
                 {
                     clearInterval(checkResultsLoaded);
+                    history = window.localStorage.getItem(STORAGE_HELPER_HISTORY);
                     history.push({ id: uuidv4(), itemType: $('input.multiselect__input').eq(1).val(), url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
