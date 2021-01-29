@@ -141,7 +141,7 @@ function ProcessTime(time) {
     setInterval(() => {
         let buttonsInResults = $('.results span.pull-left:not(.checked)');
         
-        for (let options of buttonsInResults)
+        for (const options of buttonsInResults)
         {
             let addPinButton = $('<button class="btn btn-default whisper-btn">Pin</button>');
             addPinButton.on('click', AddToPin);
@@ -150,7 +150,16 @@ function ProcessTime(time) {
             
             $(options).addClass('checked');
         }
-    }, 3000);
+        
+        let prices = $('span[data-field="price"][helper-checked!="ok"]').has('span.currency-image > img[title!="chaos"]');
+        
+        for (const priceNode of prices)
+        {
+            let [price, currency, chaosEquiv] = GetPrice(priceNode);
+            $(priceNode).append('<br/><span>&#8776;</span> <span>' + chaosEquiv + '<span>×</span><span><img src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png" alt="chaos" title="chaos"></span></span>');
+            $(priceNode).attr('helper-checked', 'ok');
+        }
+    }, 2000);
     
     setInterval(UpdatePrices, 120000);
     
@@ -275,7 +284,7 @@ function ProcessTime(time) {
         let bmContainer = $('<div></div>');
         bmContainer.append(itemShowcase);
 
-        let optionsPanel = $('<div style="padding: .5em; background-color: #000">Price: ' + price + ' ' + currency + (chaosEquiv ? ' &#8776; ' + chaosEquiv + 'c' : '') + '<br/></div>');
+        let optionsPanel = $('<div style="padding: .5em; background-color: #000">Price: ' + price + ' ' + currency + (chaosEquiv ? ' &#8776; ' + chaosEquiv + '×<img src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png" width="28px">' : '') + '<br/></div>');
         let removeButton = $('<button class="ui-button ui-widget ui-corner-all">Remove</button>');
         optionsPanel.append(removeButton);
         let scrollToButton = $('<button class="ui-button ui-widget ui-corner-all">Scroll to</button>');
@@ -450,13 +459,13 @@ function ProcessTime(time) {
         if (event.type === 'click' || (event.type === 'keydown' && event.which === 13))
         {
             let checkResultsLoaded = setInterval(() => {
-                if ($('div.resultset').children().length > 0)
+                if (/*$('div.resultset').children().length > 0*/ RegExp('/trade/search/\\w+/\\w+').test(window.location.pathname))
                 {
                     clearInterval(checkResultsLoaded);
                     history.push({ id: uuidv4(), itemType: $('input.multiselect__input').eq(1).val(), url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
-            }, 100);
+            }, 1000);
         }
     }
 })();
