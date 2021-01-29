@@ -1,13 +1,12 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.6
+// @version      1.0.7
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
 // @require      https://code.jquery.com/jquery-3.5.1.min.js
 // @require      https://ducng99.github.io/PoETradeHelper/jquery-ui/jquery-ui.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -40,21 +39,33 @@ function ProcessTime(time) {
     
     if (timeDiff < 1000 * 60 * 60) // less than 1 hour
     {
-        let min = Math.round(timeDiff / 1000 / 60);
+        let min = Math.floor(timeDiff / 1000 / 60);
         return min + ' minute' + (min <= 1 ? '' : 's') + ' ago';
     }
     else if (timeDiff < 1000 * 60 * 60 * 24) // less than a day
     {
-        let hour = Math.round(timeDiff / 1000 / 60 / 60);
+        let hour = Math.floor(timeDiff / 1000 / 60 / 60);
         return hour + ' hour' + (hour <= 1 ? '' : 's') + ' ago';
     }
     else if (timeDiff < 1000 * 60 * 60 * 24 * new Date().getDate()) // less than a month
     {
-        let days = Math.round(timeDiff / 1000 / 60 / 60 / 24);
+        let days = Math.floor(timeDiff / 1000 / 60 / 60 / 24);
         return days + ' day' + (days <= 1 ? '' : 's') + ' ago';
     }
     
     return 'a long time ago';
+}
+
+function RandStr(length = 32) {
+    let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let str = '';
+    
+    for (let i = 0; i < length; i++)
+    {
+        str += chars.charAt(Math.floor(Math.random() * (chars.length - 1)));
+    }
+    
+    return str;
 }
 
 (function() {
@@ -400,7 +411,7 @@ function ProcessTime(time) {
                         if (name && color)
                         {
                             bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-                            bookmarks.push({ id: uuidv4(), name: name, bgColor: color, bookmarks: [] });
+                            bookmarks.push({ id: RandStr(), name: name, bgColor: color, bookmarks: [] });
                             $('#bookmark_newFolderName').val('');
 
                             UpdateBookmarks();
@@ -461,7 +472,7 @@ function ProcessTime(time) {
                             {
                                 if (folder.id === folderID)
                                 {
-                                    folder.bookmarks.push({ id: uuidv4(), name: name, url: url });
+                                    folder.bookmarks.push({ id: RandStr(), name: name, url: url });
                                     addBookmarkModal.find('#bookmark_newName').val('');
                                     UpdateBookmarks();
                                     addBookmarkModal.dialog('close');
@@ -511,7 +522,11 @@ function ProcessTime(time) {
                 {
                     clearInterval(checkResultsLoaded);
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
-                    history.push({ id: uuidv4(), itemType: $('input.multiselect__input')[1].value, url: window.location.href, time: Date.now() });
+                    
+                    let inputs = $('input.multiselect__input');
+                    let itemType = inputs[0].value ? inputs[0].value : inputs[1].value;
+                    
+                    history.push({ id: RandStr(), itemType: itemType, url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
             }, 1000);
