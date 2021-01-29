@@ -17,10 +17,34 @@ function ArrayIndexMove(array, from, to) {
     array.splice(to, 0, array.splice(from, 1)[0]);
 };
 
+function ProcessTime(time) {
+    let currentTime = Date.now();
+    let timeDiff = currentTime - time;
+    
+    if (timeDiff < 1000 * 60 * 60) // less than 1 hour
+    {
+        let min = Math.round(timeDiff / 1000 / 60);
+        return min + ' minute' + (min === 1 ? '' : 's') + ' ago';
+    }
+    else if (timeDiff < 1000 * 60 * 60 * 24) // less than a day
+    {
+        let hour = Math.round(timeDiff / 1000 / 60 / 60);
+        return hour + ' hour' + (hour === 1 ? '' : 's') + ' ago';
+    }
+    else if (timeDiff < 1000 * 60 * 60 * 24 * new Date().getDate()) // less than a month
+    {
+        let days = Math.round(timeDiff / 1000 / 60 / 60 / 24);
+        return days + ' day' + (days === 1 ? '' : 's') + ' ago';
+    }
+    
+    return 'a long time ago';
+}
+
 (function() {
     'use strict';
     
     const STORAGE_HELPER_BOOKMARKS = 'PoETradeHelper_Bookmarks';
+    const STORAGE_HELPER_HISTORY = 'PoETradeHelper_History';
     
     $('head').append('<link rel="stylesheet" href="https://ducng99.github.io/PoETradeHelper/jquery-ui/jquery-ui.min.css"/>');
     $('head').append(`
@@ -50,17 +74,23 @@ function ArrayIndexMove(array, from, to) {
     {
         bookmarks = [];
     }
+    var history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
+    if (history === null)
+    {
+        history = [];
+    }
 
-    let helperContainer = $('<div style="display: flex; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; background-color: #000000aa; width: 370px" id="helperContainer"></div>');
+    let helperContainer = $('<div style="display: flex; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; background-color: #000b; width: 370px" id="helperContainer"></div>');
     helperContainer.append('<button id="toggleHelperButton" class="ui-button">Show/Hide</button><br/>' + 
-                           '<div id="helper_tabs" style="flex-grow: 1; display: flex; flex-direction: column">' + 
+                           '<div id="helper_tabs" style="flex-grow: 1; display: flex; flex-direction: column; background: transparent">' + 
                            '<ul>' +
                            '<li><a href="#tabs-bookmark"><span class="ui-icon ui-icon-folder-open"></span>Bookmarks</a></li>' +
                            '<li><a href="#tabs-pins"><span class="ui-icon ui-icon-pin-s"></span>Pins</a></li>' +
                            '<li><a href="#tabs-history"><span class="ui-icon ui-icon-calendar"></span>History</a></li>' +
                            '</ul>' +
-                           '<div id="tabs-bookmark" style="overflow-y: auto; padding: 0 0.6em; flex-grow: 1"></div>' +
-                           '<div id="tabs-pins" style="overflow-y: auto; padding: 0 0.6em; flex-grow: 1"></div>' +
+                           '<div id="tabs-bookmark" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
+                           '<div id="tabs-pins" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
+                           '<div id="tabs-history" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '</div>');
     
     $('body').append(helperContainer);
@@ -90,11 +120,20 @@ function ArrayIndexMove(array, from, to) {
     });
     
     UpdateBookmarks();
+    
+    let clearHistoryButton = $('<button class="ui-button"><span class="ui-icon ui-icon-closethick"></span>Clear all</button>');
+    clearHistoryButton.on('click', ClearHistory);
+    $('#tabs-history').append(clearHistoryButton);
+    $('#tabs-history').append('<div id="historyContainer" style="display: flex; flex-direction: column-reverse"></div>');
+    
+    UpdateHistory();
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
     
     setTimeout(() => {
         $('div#app > div.content').css('width', 'calc(100% - 370px)');
+        $('body').on('keydown', AddHistory);
+        $('button.search-btn').on('click', AddHistory);
     
         UpdatePrices();
     }, 2000);
@@ -188,6 +227,26 @@ function ArrayIndexMove(array, from, to) {
         }
         
         UpdateBookmarks();
+    }
+    
+    function UpdateHistory()
+    {
+        window.localStorage.setItem(STORAGE_HELPER_HISTORY, JSON.stringify(history));
+        for (const h of history)
+        {
+            if ($('#historyContainer div[history-id="' + h.id + '"]').length === 0)
+            {
+                let entryNode = $('<div history-id="' + h.id + '" style="display: flex; background: #222c; padding: .4em .4em; margin-bottom: .1em"><a href="' + h.url + '" style="flex-grow:1"><div style="display: flex"><b>' + h.itemType + '</b><small style="margin-left:auto">' + ProcessTime(h.time) + '</small></div><small>...' + h.url.substring(h.url.indexOf('/trade/')) + '</small></a></div>');
+                $('#historyContainer').append(entryNode);
+            }
+        }
+    }
+    
+    function ClearHistory()
+    {
+        $('#historyContainer').empty();
+        history = [];
+        UpdateHistory();
     }
 
     function ToggleHelper()
@@ -383,6 +442,21 @@ function ArrayIndexMove(array, from, to) {
                     }
                 }
             }
+        }
+    }
+    
+    function AddHistory(event)
+    {
+        if (event.type === 'click' || (event.type === 'keydown' && event.which === 13))
+        {
+            let checkResultsLoaded = setInterval(() => {
+                if ($('div.resultset').children().length > 0)
+                {
+                    clearInterval(checkResultsLoaded);
+                    history.push({ id: uuidv4(), itemType: $('input.multiselect__input').eq(1).val(), url: window.location.href, time: Date.now() });
+                    UpdateHistory();
+                }
+            }, 100);
         }
     }
 })();
