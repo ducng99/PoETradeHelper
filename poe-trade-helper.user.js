@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.4
+// @version      1.0.5
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -505,7 +505,7 @@ function ProcessTime(time) {
                 if (/*$('div.resultset').children().length > 0*/ RegExp('/trade/search/\\w+/\\w+').test(window.location.pathname))
                 {
                     clearInterval(checkResultsLoaded);
-                    history = window.localStorage.getItem(STORAGE_HELPER_HISTORY);
+                    history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
                     history.push({ id: uuidv4(), itemType: $('input.multiselect__input').eq(1).val(), url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
