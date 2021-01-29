@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.1
+// @version      1.0.3
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -10,6 +10,23 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+/*
+Copyright © 2021 Duc Nguyen
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 const $ = jQuery;
     
@@ -130,12 +147,12 @@ function ProcessTime(time) {
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
     
+    UpdatePrices('Ritual');
+    
     setTimeout(() => {
         $('div#app > div.content').css('width', 'calc(100% - 370px)');
         $('body').on('keydown', AddHistory);
         $('button.search-btn').on('click', AddHistory);
-    
-        UpdatePrices();
     }, 2000);
     
     setInterval(() => {
@@ -181,9 +198,9 @@ function ProcessTime(time) {
     
     setInterval(UpdatePrices, 120000);
     
-    function UpdatePrices()
+    function UpdatePrices(curLeague = null)
     {
-        let league = document.querySelector('span.multiselect__single').textContent;
+        let league = curLeague ? curLeague : document.querySelector('span.multiselect__single').textContent;
         GM_xmlhttpRequest({
             url: 'https://poe.ninja/api/data/currencyoverview?league=' + league + '&type=Currency',
             method: 'GET',
