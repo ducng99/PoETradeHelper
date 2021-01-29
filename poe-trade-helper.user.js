@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0
+// @version      1.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -158,6 +158,24 @@ function ProcessTime(time) {
             let [price, currency, chaosEquiv] = GetPrice(priceNode);
             $(priceNode).append('<br/><span>&#8776;</span> <span>' + chaosEquiv + '<span>×</span><span><img src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png" alt="chaos" title="chaos"></span></span>');
             $(priceNode).attr('helper-checked', 'ok');
+        }
+        
+        let currentFilters = GetFilters();
+        
+        let modTexts = $('div[data-mod] span[data-field][helper-checked!="ok"]');
+            
+        for (const modText of modTexts)
+        {
+            for (const filter of currentFilters)
+            {
+                if (RegExp(filter).test(modText.textContent))
+                {
+                    modText.style.backgroundColor = "#484703";
+                    modText.style.color = "#e2e2e2";
+                    modText.setAttribute('helper-checked', 'ok');
+                    break;
+                }
+            }
         }
     }, 2000);
     
@@ -467,5 +485,20 @@ function ProcessTime(time) {
                 }
             }, 1000);
         }
+    }
+    
+    function GetFilters()
+    {
+        let filters = $('div.search-advanced-pane.brown div.filter-group.expanded div.filter.full-span:not(.disabled) div.filter-title');
+        let filtersRegex = [];
+        
+        for (const filter of filters)
+        {
+            let filterText = $(filter).contents()[1].textContent.trim();
+            filterText = filterText.replace(/[\\+\\-]?#/g, '[\\+\\-]?\\d+');
+            filtersRegex.push(filterText);
+        }
+        
+        return filtersRegex;
     }
 })();
