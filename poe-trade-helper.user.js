@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.5
+// @version      1.0.6
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -158,41 +158,44 @@ function ProcessTime(time) {
     }, 2000);
     
     setInterval(() => {
-        let buttonsInResults = $('.results span.pull-left:not(.checked)');
-        
-        for (const options of buttonsInResults)
+        if (window.location.href.indexOf("exchange") === -1)
         {
-            let addPinButton = $('<button class="btn btn-default whisper-btn">Pin</button>');
-            addPinButton.on('click', AddToPin);
-
-            $(options).append(addPinButton);
-            
-            $(options).addClass('checked');
-        }
+            let buttonsInResults = $('.results span.pull-left:not(.checked)');
         
-        let prices = $('span[data-field="price"][helper-checked!="ok"]').has('span.currency-image > img[title!="chaos"]');
-        
-        for (const priceNode of prices)
-        {
-            let [price, currency, chaosEquiv] = GetPrice(priceNode);
-            $(priceNode).append('<br/><span>&#8776;</span> <span>' + chaosEquiv + '<span>×</span><span><img src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png" alt="chaos" title="chaos"></span></span>');
-            $(priceNode).attr('helper-checked', 'ok');
-        }
-        
-        let currentFilters = GetFilters();
-        
-        let modTexts = $('div[data-mod] span[data-field][helper-checked!="ok"]');
-            
-        for (const modText of modTexts)
-        {
-            for (const filter of currentFilters)
+            for (const options of buttonsInResults)
             {
-                if (RegExp(filter).test(modText.textContent))
+                let addPinButton = $('<button class="btn btn-default whisper-btn">Pin</button>');
+                addPinButton.on('click', AddToPin);
+
+                $(options).append(addPinButton);
+
+                $(options).addClass('checked');
+            }
+
+            let prices = $('span[data-field="price"][helper-checked!="ok"]').has('span.currency-image > img[title!="chaos"]');
+
+            for (const priceNode of prices)
+            {
+                let [price, currency, chaosEquiv] = GetPrice(priceNode);
+                $(priceNode).append('<br/><span>&#8776;</span> <span>' + chaosEquiv + '<span>×</span><span><img src="https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png" alt="chaos" title="chaos"></span></span>');
+                $(priceNode).attr('helper-checked', 'ok');
+            }
+
+            let currentFilters = GetFilters();
+
+            let modTexts = $('div[data-mod] span[data-field][helper-checked!="ok"]');
+
+            for (const modText of modTexts)
+            {
+                for (const filter of currentFilters)
                 {
-                    modText.style.backgroundColor = "#484703";
-                    modText.style.color = "#e2e2e2";
-                    modText.setAttribute('helper-checked', 'ok');
-                    break;
+                    if (RegExp(filter).test(modText.textContent))
+                    {
+                        modText.style.backgroundColor = "#484703";
+                        modText.style.color = "#e2e2e2";
+                        modText.setAttribute('helper-checked', 'ok');
+                        break;
+                    }
                 }
             }
         }
@@ -439,6 +442,7 @@ function ProcessTime(time) {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
             open: () => {
+                addBookmarkModal.find('#bookmark_newName').val($('input.multiselect__input')[1].value);
                 addBookmarkModal.find('#bookmark_newURL').val(window.location.href);
             },
             width: 400,
@@ -458,6 +462,7 @@ function ProcessTime(time) {
                                 if (folder.id === folderID)
                                 {
                                     folder.bookmarks.push({ id: uuidv4(), name: name, url: url });
+                                    addBookmarkModal.find('#bookmark_newName').val('');
                                     UpdateBookmarks();
                                     addBookmarkModal.dialog('close');
                                     break;
@@ -502,11 +507,11 @@ function ProcessTime(time) {
         if (event.type === 'click' || (event.type === 'keydown' && event.which === 13))
         {
             let checkResultsLoaded = setInterval(() => {
-                if (/*$('div.resultset').children().length > 0*/ RegExp('/trade/search/\\w+/\\w+').test(window.location.pathname))
+                if (RegExp('/trade/search/\\w+/\\w+').test(window.location.pathname))
                 {
                     clearInterval(checkResultsLoaded);
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
-                    history.push({ id: uuidv4(), itemType: $('input.multiselect__input').eq(1).val(), url: window.location.href, time: Date.now() });
+                    history.push({ id: uuidv4(), itemType: $('input.multiselect__input')[1].value, url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
             }, 1000);
