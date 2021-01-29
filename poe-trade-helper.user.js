@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.1
+// @version      1.0.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -263,7 +263,7 @@ function ProcessTime(time) {
         {
             if ($('#historyContainer div[history-id="' + h.id + '"]').length === 0)
             {
-                let entryNode = $('<div history-id="' + h.id + '" style="display: flex; background: #222c; padding: .4em .4em; margin-bottom: .1em"><a href="' + h.url + '" style="flex-grow:1"><div style="display: flex"><b>' + h.itemType + '</b><small style="margin-left:auto">' + ProcessTime(h.time) + '</small></div><small>...' + h.url.substring(h.url.indexOf('/trade/')) + '</small></a></div>');
+                let entryNode = $('<div history-id="' + h.id + '" style="display: flex; background: #222c; padding: .4em .4em; margin-bottom: .1em"><a href="' + h.url + '" style="flex-grow:1"><div style="display: flex"><b>' + h.itemType + '</b><small style="margin-left:auto">' + ProcessTime(h.time) + '</small></div><small style="color: gray">...' + h.url.substring(h.url.indexOf('/trade/')) + '</small></a></div>');
                 $('#historyContainer').append(entryNode);
             }
         }
