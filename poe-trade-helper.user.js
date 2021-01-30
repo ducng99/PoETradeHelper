@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.7
+// @version      1.0.8
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -453,7 +453,7 @@ function RandStr(length = 32) {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
             open: () => {
-                addBookmarkModal.find('#bookmark_newName').val($('input.multiselect__input')[1].value);
+                addBookmarkModal.find('#bookmark_newName').val($('input.multiselect__input')[1].value === 'Any' ? '' : $('input.multiselect__input')[1].value);
                 addBookmarkModal.find('#bookmark_newURL').val(window.location.href);
             },
             width: 400,
