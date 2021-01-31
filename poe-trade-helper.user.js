@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.8
+// @version      1.0.9
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -34,7 +34,9 @@ function ArrayIndexMove(array, from, to) {
 };
 
 function ProcessTime(time) {
-    let currentTime = Date.now();
+    let now = new Date();
+    let currentTime = now.getTime();
+    now.setDate(0);
     let timeDiff = currentTime - time;
     
     if (timeDiff < 1000 * 60 * 60) // less than 1 hour
@@ -47,7 +49,7 @@ function ProcessTime(time) {
         let hour = Math.floor(timeDiff / 1000 / 60 / 60);
         return hour + ' hour' + (hour <= 1 ? '' : 's') + ' ago';
     }
-    else if (timeDiff < 1000 * 60 * 60 * 24 * new Date().getDate()) // less than a month
+    else if (timeDiff < 1000 * 60 * 60 * 24 * now.getDate()) // less than a month
     {
         let days = Math.floor(timeDiff / 1000 / 60 / 60 / 24);
         return days + ' day' + (days <= 1 ? '' : 's') + ' ago';
@@ -296,7 +298,7 @@ function RandStr(length = 32) {
         {
             if ($('#historyContainer div[history-id="' + h.id + '"]').length === 0)
             {
-                let entryNode = $('<div history-id="' + h.id + '" style="display: flex; background: #222c; padding: .4em .4em; margin-bottom: .1em"><a href="' + h.url + '" style="flex-grow:1"><div style="display: flex"><b>' + h.itemType + '</b><small style="margin-left:auto">' + ProcessTime(h.time) + '</small></div><small style="color: gray">...' + h.url.substring(h.url.indexOf('/trade/')) + '</small></a></div>');
+                let entryNode = $('<div history-id="' + h.id + '" style="display: flex; background: #222c; padding: .4em .4em; margin-bottom: .1em"><a href="' + h.url + '" style="flex-grow:1"><div style="display: flex"><b style="text-overflow: ellipsis; overflow: hidden; width: 70%; white-space: nowrap;">' + h.title + '</b><small style="margin-left:auto">' + ProcessTime(h.time) + '</small></div><small style="color: gray">...' + h.url.substring(h.url.indexOf('/trade/')) + '</small></a></div>');
                 $('#historyContainer').append(entryNode);
             }
         }
@@ -524,9 +526,9 @@ function RandStr(length = 32) {
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
                     
                     let inputs = $('input.multiselect__input');
-                    let itemType = inputs[0].value ? inputs[0].value : inputs[1].value;
+                    let item = inputs[0].value ? inputs[0].value : inputs[1].value;
                     
-                    history.push({ id: RandStr(), itemType: itemType, url: window.location.href, time: Date.now() });
+                    history.push({ id: RandStr(), title: item, url: window.location.href, time: Date.now() });
                     UpdateHistory();
                 }
             }, 1000);
