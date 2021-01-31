@@ -455,7 +455,9 @@ function RandStr(length = 32) {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
             open: () => {
-                addBookmarkModal.find('#bookmark_newName').val($('input.multiselect__input')[1].value === 'Any' ? '' : $('input.multiselect__input')[1].value);
+                let inputs = $('input.multiselect__input');
+                let name = inputs[0].value ? inputs[0].value : (inputs[1].value === 'Any' ? '' : inputs[1].value);
+                addBookmarkModal.find('#bookmark_newName').val(name);
                 addBookmarkModal.find('#bookmark_newURL').val(window.location.href);
             },
             width: 400,
