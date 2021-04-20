@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.0.9
+// @version      1.1.0
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -112,17 +112,19 @@ function RandStr(length = 32) {
         window.localStorage.setItem(STORAGE_HELPER_HISTORY, JSON.stringify(history));
     }
 
-    let helperContainer = $('<div style="display: flex; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; background-color: #000b; width: 370px" id="helperContainer"></div>');
+    let helperContainer = $('<div style="display: flex; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; background-color: #000b; width: 374px" id="helperContainer"></div>');
     helperContainer.append('<button id="toggleHelperButton" class="ui-button">Show/Hide</button><br/>' + 
                            '<div id="helper_tabs" style="flex-grow: 1; display: flex; flex-direction: column; background: transparent">' + 
                            '<ul>' +
                            '<li><a href="#tabs-bookmark"><span class="ui-icon ui-icon-folder-open"></span>Bookmarks</a></li>' +
                            '<li><a href="#tabs-pins"><span class="ui-icon ui-icon-pin-s"></span>Pins</a></li>' +
                            '<li><a href="#tabs-history"><span class="ui-icon ui-icon-calendar"></span>History</a></li>' +
+                           '<li><a href="#tabs-settings"><span class="ui-icon ui-icon-gear"></span>Settings</a></li>' +
                            '</ul>' +
                            '<div id="tabs-bookmark" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '<div id="tabs-pins" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '<div id="tabs-history" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
+                           '<div id="tabs-settings" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '</div>');
     
     $('body').append(helperContainer);
@@ -159,10 +161,40 @@ function RandStr(length = 32) {
     $('#tabs-history').append('<div id="historyContainer" style="display: flex; flex-direction: column-reverse"></div>');
     
     UpdateHistory();
+    
+    let exportButton = $('<button class="ui-button">Export</button>');
+    exportButton.on('click',() => {
+        let dummy = document.createElement('a');
+        let bookmarksB64 = btoa(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
+        dummy.setAttribute('href', "data:text/plain;charset=utf-8;base64," + bookmarksB64);
+        dummy.setAttribute('download', 'poehelper_export.json');
+        document.body.appendChild(dummy);
+        dummy.click();
+        document.body.removeChild(dummy);
+    });
+    $('#tabs-settings').append(exportButton);
+    $('#tabs-settings').append('<hr/>');
+    $('#tabs-settings').append('<input type="file" id="poehelper_importFile"/><br/>');
+    let importButton = $('<button class="ui-button">Import</button>');
+    importButton.on('click', () => {
+        let fr = new FileReader();
+        fr.onload = () => {
+            try
+            {
+                let fileJSON = JSON.parse(fr.result);
+                bookmarks = fileJSON;
+            }
+            catch 
+            {
+                alert("Cannot parse import file into JSON");
+            }
+        };
+    });
+    $('#tabs-settings').append();
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
     
-    UpdatePrices('Ritual');
+    UpdatePrices('Ultimatum');
     
     setTimeout(() => {
         $('div#app > div.content').css('width', 'calc(100% - 370px)');
@@ -527,11 +559,14 @@ function RandStr(length = 32) {
                     clearInterval(checkResultsLoaded);
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
                     
-                    let inputs = $('input.multiselect__input');
-                    let item = inputs[0].value ? inputs[0].value : inputs[1].value;
-                    
-                    history.push({ id: RandStr(), title: item, url: window.location.href, time: Date.now() });
-                    UpdateHistory();
+                    if (history[history.length - 1].url !== window.location.href)
+                    {
+                        let inputs = $('input.multiselect__input');
+                        let item = inputs[0].value ? inputs[0].value : inputs[1].value;
+
+                        history.push({ id: RandStr(), title: item, url: window.location.href, time: Date.now() });
+                        UpdateHistory();
+                    }
                 }
             }, 1000);
         }
