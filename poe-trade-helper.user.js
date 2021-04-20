@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.1.0
+// @version      1.1.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -178,19 +178,22 @@ function RandStr(length = 32) {
     let importButton = $('<button class="ui-button">Import</button>');
     importButton.on('click', () => {
         let fr = new FileReader();
-        fr.onload = () => {
+        fr.onload = (e) => {
             try
             {
                 let fileJSON = JSON.parse(fr.result);
                 bookmarks = fileJSON;
+                UpdateBookmarks();
+                alert("Imported!");
             }
             catch 
             {
                 alert("Cannot parse import file into JSON");
             }
         };
+        fr.readAsText(document.getElementById('poehelper_importFile').files[0]);
     });
-    $('#tabs-settings').append();
+    $('#tabs-settings').append(importButton);
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
     
