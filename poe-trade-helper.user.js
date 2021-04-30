@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.1.1
+// @version      1.2.0
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -143,13 +143,13 @@ function RandStr(length = 32) {
         update: RearrangeBookmarksFolder
     });
     
-    let addBookmarkFolderModal = $('<div id="addBookmarkFolderModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62" style="padding: 0; width: 50px; height: 50px"/></div>');
-    addBookmarkFolderModal.dialog({
+    let bookmarkFolderInfoModal = $('<div id="bookmarkFolderInfoModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62" style="padding: 0; width: 50px; height: 50px"/></div>');
+    bookmarkFolderInfoModal.dialog({
         autoOpen: false
     });
     
-    let addBookmarkModal = $('<div id="addBookmarkModal"><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName" style="width: 100%"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" style="width: 100%"/></div>');
-    addBookmarkModal.dialog({
+    let bookmarkInfoModal = $('<div id="bookmarkInfoModal"><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName" style="width: 100%"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" style="width: 100%"/></div>');
+    bookmarkInfoModal.dialog({
         autoOpen: false
     });
     
@@ -299,6 +299,9 @@ function RandStr(length = 32) {
                     let container = $('div[folder-id="' + folder.id + '"] .bookmarksContainer');
                     let bookmarkNode = $('<div bookmark-id="' + bm.id + '" folder-id="' + folder.id + '" style="display:flex;align-items:center"><a href="' + bm.url + '" style="flex-grow:1"><div style="background: #222; border: 1px solid #555; padding: .2em .4em; margin: .2em .1em">' + bm.name + '</div></a></div>');
                     container.append(bookmarkNode);
+                    let editButton = $('<button class="ui-button"><span class="ui-icon ui-icon-pencil">Edit</span></button>');
+                    bookmarkNode.append(editButton);
+                    editButton.on('click', EditBookmark);
                     let removeButton = $('<button class="ui-button"><span class="ui-icon ui-icon-trash">Remove</span></button>');
                     bookmarkNode.append(removeButton);
                     removeButton.on('click', RemoveBookmark);
@@ -434,7 +437,7 @@ function RandStr(length = 32) {
     
     function AddBookmarkFolder(event)
     {
-        addBookmarkFolderModal.dialog('option', {
+        bookmarkFolderInfoModal.dialog('option', {
             appendTo: '#helperContainer',
             title: 'Create new folder',
             width: 400,
@@ -442,8 +445,8 @@ function RandStr(length = 32) {
                 {
                     text: 'Add',
                     click: () => {
-                        let name = addBookmarkFolderModal.find('#bookmark_newFolderName').val();
-                        let color = addBookmarkFolderModal.find('#bookmark_newFolderColor').val();
+                        let name = bookmarkFolderInfoModal.find('#bookmark_newFolderName').val();
+                        let color = bookmarkFolderInfoModal.find('#bookmark_newFolderColor').val();
                         
                         if (name && color)
                         {
@@ -452,13 +455,13 @@ function RandStr(length = 32) {
                             $('#bookmark_newFolderName').val('');
 
                             UpdateBookmarks();
-                            addBookmarkFolderModal.dialog('close');
+                            bookmarkFolderInfoModal.dialog('close');
                         }
                     }
                 }
             ]
         });
-        addBookmarkFolderModal.dialog('open');
+        bookmarkFolderInfoModal.dialog('open');
     }
     
     function RemoveBookmarkFolder(event)
@@ -486,22 +489,22 @@ function RandStr(length = 32) {
     {
         let folderID = event.currentTarget.parentElement.parentElement.getAttribute('folder-id');
         
-        addBookmarkModal.dialog('option', {
+        bookmarkInfoModal.dialog('option', {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
             open: () => {
                 let inputs = $('input.multiselect__input');
                 let name = inputs[0].value ? inputs[0].value : (inputs[1].value === 'Any' ? '' : inputs[1].value);
-                addBookmarkModal.find('#bookmark_newName').val(name);
-                addBookmarkModal.find('#bookmark_newURL').val(window.location.href);
+                bookmarkInfoModal.find('#bookmark_newName').val(name);
+                bookmarkInfoModal.find('#bookmark_newURL').val(window.location.href);
             },
             width: 400,
             buttons: [
                 {
                     text: 'Add',
                     click: () => {
-                        let name = addBookmarkModal.find('#bookmark_newName').val();
-                        let url = addBookmarkModal.find('#bookmark_newURL').val();
+                        let name = bookmarkInfoModal.find('#bookmark_newName').val();
+                        let url = bookmarkInfoModal.find('#bookmark_newURL').val();
                         
                         if (name && url)
                         {
@@ -512,9 +515,9 @@ function RandStr(length = 32) {
                                 if (folder.id === folderID)
                                 {
                                     folder.bookmarks.push({ id: RandStr(), name: name, url: url });
-                                    addBookmarkModal.find('#bookmark_newName').val('');
+                                    bookmarkInfoModal.find('#bookmark_newName').val('');
                                     UpdateBookmarks();
-                                    addBookmarkModal.dialog('close');
+                                    bookmarkInfoModal.dialog('close');
                                     break;
                                 }
                             }
@@ -523,7 +526,80 @@ function RandStr(length = 32) {
                 }
             ]
         });
-        addBookmarkModal.dialog('open');
+        bookmarkInfoModal.dialog('open');
+    }
+        
+    function EditBookmark(event)
+    {
+        let bookmarkNode = event.currentTarget.parentElement;
+        let folderID = bookmarkNode.getAttribute('folder-id');
+        let bookmarkID = bookmarkNode.getAttribute('bookmark-id');
+        let currentName = "";
+        let currentURL = "";
+        
+        bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
+        
+        for (const folder of bookmarks)
+        {
+            if (folder.id === folderID)
+            {
+                for (const bm of folder.bookmarks)
+                {
+                    if (bm.id === bookmarkID)
+                    {
+                        currentName = bm.name;
+                        currentURL = bm.url;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        
+        bookmarkInfoModal.dialog('option', {
+            appendTo: '#helperContainer',
+            title: 'Edit bookmark',
+            open: () => {
+                bookmarkInfoModal.find('#bookmark_newName').val(currentName);
+                bookmarkInfoModal.find('#bookmark_newURL').val(currentURL);
+            },
+            width: 400,
+            buttons: [
+                {
+                    text: 'Save',
+                    click: () => {
+                        let name = bookmarkInfoModal.find('#bookmark_newName').val();
+                        let url = bookmarkInfoModal.find('#bookmark_newURL').val();
+                        
+                        if (name && url)
+                        {
+                            bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
+                            
+                            for (const folder of bookmarks)
+                            {
+                                if (folder.id === folderID)
+                                {
+                                    for (const bm of folder.bookmarks)
+                                    {
+                                        if (bm.id === bookmarkID)
+                                        {
+                                            bm.name = name;
+                                            bm.url = url;
+                                            bookmarkNode.remove();
+                                            UpdateBookmarks();
+                                            bookmarkInfoModal.dialog('close');
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        });
+        bookmarkInfoModal.dialog('open');
     }
     
     function RemoveBookmark(event)
@@ -548,6 +624,7 @@ function RandStr(length = 32) {
                         break;
                     }
                 }
+                break;
             }
         }
     }
