@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.2.0
+// @version      1.2.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -639,7 +639,7 @@ function RandStr(length = 32) {
                     clearInterval(checkResultsLoaded);
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
                     
-                    if (history[history.length - 1].url !== window.location.href)
+                    if (history.length == 0 || history[history.length - 1].url !== window.location.href)
                     {
                         let inputs = $('input.multiselect__input');
                         let item = inputs[0].value ? inputs[0].value : inputs[1].value;
