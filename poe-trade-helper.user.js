@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.2.1
+// @version      1.2.1.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -660,7 +660,7 @@ function RandStr(length = 32) {
         for (const filter of filters)
         {
             let filterText = $(filter).contents()[1].textContent.trim();
-            filterText = filterText.replace(/[\\+\\-]?#/g, '[\\+\\-]?\\d+');
+            filterText = filterText.replace(/[\\+\\-]?#/g, '[\\+\\-]?[0-9.]+');
             filtersRegex.push(filterText);
         }
         
