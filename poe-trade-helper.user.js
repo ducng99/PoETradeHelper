@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.2.2.0
+// @version      1.2.2.1
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -219,7 +219,7 @@ function RandStr(length = 32) {
                         }
                     });
                 }
-            }, 100);
+            }, 1);
         });
     }, 2000);
 
