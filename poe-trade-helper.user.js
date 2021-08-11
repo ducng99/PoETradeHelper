@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.2.1.1
+// @version      1.2.2.0
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -28,7 +28,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 const $ = jQuery;
-    
+
 function ArrayIndexMove(array, from, to) {
     array.splice(to, 0, array.splice(from, 1)[0]);
 };
@@ -38,7 +38,7 @@ function ProcessTime(time) {
     let currentTime = now.getTime();
     now.setDate(0);
     let timeDiff = currentTime - time;
-    
+
     if (timeDiff < 1000 * 60 * 60) // less than 1 hour
     {
         let min = Math.floor(timeDiff / 1000 / 60);
@@ -54,28 +54,28 @@ function ProcessTime(time) {
         let days = Math.floor(timeDiff / 1000 / 60 / 60 / 24);
         return days + ' day' + (days <= 1 ? '' : 's') + ' ago';
     }
-    
+
     return 'a long time ago';
 }
 
 function RandStr(length = 32) {
     let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let str = '';
-    
+
     for (let i = 0; i < length; i++)
     {
         str += chars.charAt(Math.floor(Math.random() * (chars.length - 1)));
     }
-    
+
     return str;
 }
 
 (function() {
     'use strict';
-    
+
     const STORAGE_HELPER_BOOKMARKS = 'PoETradeHelper_Bookmarks';
     const STORAGE_HELPER_HISTORY = 'PoETradeHelper_History';
-    
+
     $('head').append('<link rel="stylesheet" href="https://ducng99.github.io/PoETradeHelper/jquery-ui/jquery-ui.min.css"/>');
     $('head').append(`
     <style>
@@ -126,10 +126,10 @@ function RandStr(length = 32) {
                            '<div id="tabs-history" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '<div id="tabs-settings" style="height:1px; overflow-y: auto; padding: 0 0.6em; flex-grow: 1; background-color: inherit"></div>' +
                            '</div>');
-    
+
     $('body').append(helperContainer);
     $('#helper_tabs').tabs();
-    
+
     let addBookmarkFolderButton = $('<button class="ui-button">Create new folder</button>');
     addBookmarkFolderButton.on('click', AddBookmarkFolder);
     $('#tabs-bookmark').append(addBookmarkFolderButton);
@@ -142,26 +142,26 @@ function RandStr(length = 32) {
         handle: 'div.moveFolder',
         update: RearrangeBookmarksFolder
     });
-    
+
     let bookmarkFolderInfoModal = $('<div id="bookmarkFolderInfoModal"><label for="bookmark_newFolderName">Folder name:</label><br/><input id="bookmark_newFolderName"/><br/><label for="bookmark_newFolderColor">Background color:</label><br/><input type="color" id="bookmark_newFolderColor" value="#133d62" style="padding: 0; width: 50px; height: 50px"/></div>');
     bookmarkFolderInfoModal.dialog({
         autoOpen: false
     });
-    
+
     let bookmarkInfoModal = $('<div id="bookmarkInfoModal"><label for="bookmark_newName">Bookmark name:</label><br/><input id="bookmark_newName" style="width: 100%"/><br/><label for="bookmark_newURL">Bookmark URL:</label><br/><input id="bookmark_newURL" style="width: 100%"/></div>');
     bookmarkInfoModal.dialog({
         autoOpen: false
     });
-    
+
     UpdateBookmarks();
-    
+
     let clearHistoryButton = $('<button class="ui-button"><span class="ui-icon ui-icon-closethick"></span>Clear all</button>');
     clearHistoryButton.on('click', ClearHistory);
     $('#tabs-history').append(clearHistoryButton);
     $('#tabs-history').append('<div id="historyContainer" style="display: flex; flex-direction: column-reverse"></div>');
-    
+
     UpdateHistory();
-    
+
     let exportButton = $('<button class="ui-button">Export</button>');
     exportButton.on('click',() => {
         let dummy = document.createElement('a');
@@ -196,20 +196,38 @@ function RandStr(length = 32) {
     $('#tabs-settings').append(importButton);
 
     helperContainer.find('#toggleHelperButton').on('click', ToggleHelper);
-    
-    UpdatePrices('Ultimatum');
-    
+
+    UpdatePrices('Expedition');
+
     setTimeout(() => {
         $('div#app > div.content').css('width', 'calc(100% - 370px)');
         $('body').on('keydown', AddHistory);
         $('button.search-btn').on('click', AddHistory);
+
+        // Add ~ to filters
+        document.querySelector('div.brown').addEventListener('click', () => {
+            setTimeout(() => {
+                let inputDOM = document.activeElement;
+                if (inputDOM && inputDOM.classList.contains('multiselect__input') && !inputDOM.classList.contains('helper_checked')) {
+                    inputDOM.classList.add('helper_checked');
+                    
+                    inputDOM.addEventListener('input', (e) => {
+                        if (/^[a-z]/.test(e.target.value)) {
+                            setTimeout(() => {
+                                e.target.value = '~' + e.target.value;
+                            }, 1);
+                        }
+                    });
+                }
+            }, 100);
+        });
     }, 2000);
-    
+
     setInterval(() => {
         if (window.location.href.indexOf("exchange") === -1)
         {
             let buttonsInResults = $('.results span.pull-left:not(.checked)');
-        
+
             for (const options of buttonsInResults)
             {
                 let addPinButton = $('<button class="btn btn-default whisper-btn">Pin</button>');
@@ -248,9 +266,9 @@ function RandStr(length = 32) {
             }
         }
     }, 2000);
-    
+
     setInterval(UpdatePrices, 120000);
-    
+
     function UpdatePrices(curLeague = null)
     {
         let league = curLeague ? curLeague : document.querySelector('span.multiselect__single').textContent;
@@ -262,28 +280,28 @@ function RandStr(length = 32) {
             }
         });
     }
-    
+
     function UpdateBookmarks()
     {
         window.localStorage.setItem(STORAGE_HELPER_BOOKMARKS, JSON.stringify(bookmarks));
-        
+
         for (const folder of bookmarks)
         {
             if ($('#folderContainer').find('div[folder-id="' + folder.id + '"]').length === 0)
             {
                 let folderNode = $('<div folder-id="' + folder.id + '"></div>');
                 $('#folderContainer').append(folderNode);
-                
+
                 let header = $('<h3 style="display: flex; align-items: center; padding: .2em; background-color: ' + folder.bgColor + '">' + folder.name + '</h3>');
                 folderNode.append(header);
                 header.append('<div class="ui-button moveFolder" style="margin-left: auto"><span class="ui-icon ui-icon-caret-2-n-s">Move</span></div>');
                 let removeButton = $('<button class="ui-button"><span class="ui-icon ui-icon-trash">Remove</span></button>');
                 header.append(removeButton);
                 removeButton.on('click', RemoveBookmarkFolder);
-                
+
                 folderNode.append('<div style="display:flex;flex-direction:column"><div class="bookmarksContainer" style="display:flex;flex-direction:column"></div><div class="ui-button addBookmarkButton">Add bookmark</div></div>');
                 folderNode.find('div.addBookmarkButton').on('click', AddBookmark);
-                
+
                 folderNode.accordion({
                     active: false,
                     collapsible: true,
@@ -291,7 +309,7 @@ function RandStr(length = 32) {
                     heightStyle: 'content'
                 });
             }
-            
+
             for (const bm of folder.bookmarks)
             {
                 if ($('div[folder-id="' + folder.id + '"] .bookmarksContainer div[bookmark-id="' + bm.id + '"]').length === 0)
@@ -309,13 +327,13 @@ function RandStr(length = 32) {
             }
         }
     }
-    
+
     function RearrangeBookmarksFolder(event, ui)
     {
         let folderNode = ui.item;
         let folderID = folderNode.attr('folder-id');
         let folderNewIndex = folderNode.parent().children().index(folderNode);
-        
+
         for (const folder of bookmarks)
         {
             if (folder.id === folderID)
@@ -325,10 +343,10 @@ function RandStr(length = 32) {
                 break;
             }
         }
-        
+
         UpdateBookmarks();
     }
-    
+
     function UpdateHistory()
     {
         window.localStorage.setItem(STORAGE_HELPER_HISTORY, JSON.stringify(history));
@@ -341,7 +359,7 @@ function RandStr(length = 32) {
             }
         }
     }
-    
+
     function ClearHistory()
     {
         $('#historyContainer').empty();
@@ -434,7 +452,7 @@ function RandStr(length = 32) {
 
         return [priceNum, currency];
     }
-    
+
     function AddBookmarkFolder(event)
     {
         bookmarkFolderInfoModal.dialog('option', {
@@ -447,7 +465,7 @@ function RandStr(length = 32) {
                     click: () => {
                         let name = bookmarkFolderInfoModal.find('#bookmark_newFolderName').val();
                         let color = bookmarkFolderInfoModal.find('#bookmark_newFolderColor').val();
-                        
+
                         if (name && color)
                         {
                             bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
@@ -463,14 +481,14 @@ function RandStr(length = 32) {
         });
         bookmarkFolderInfoModal.dialog('open');
     }
-    
+
     function RemoveBookmarkFolder(event)
     {
         let folderNode = event.currentTarget.parentElement.parentElement;
         let folderID = folderNode.getAttribute("folder-id");
-        
+
         bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-        
+
         for (const folder of bookmarks)
         {
             if (folder.id === folderID)
@@ -479,16 +497,16 @@ function RandStr(length = 32) {
                 break;
             }
         }
-        
+
         folderNode.remove();
-        
+
         UpdateBookmarks();
     }
-    
+
     function AddBookmark(event)
     {
         let folderID = event.currentTarget.parentElement.parentElement.getAttribute('folder-id');
-        
+
         bookmarkInfoModal.dialog('option', {
             appendTo: '#helperContainer',
             title: 'Add new bookmark',
@@ -505,11 +523,11 @@ function RandStr(length = 32) {
                     click: () => {
                         let name = bookmarkInfoModal.find('#bookmark_newName').val();
                         let url = bookmarkInfoModal.find('#bookmark_newURL').val();
-                        
+
                         if (name && url)
                         {
                             bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-                            
+
                             for (const folder of bookmarks)
                             {
                                 if (folder.id === folderID)
@@ -528,7 +546,7 @@ function RandStr(length = 32) {
         });
         bookmarkInfoModal.dialog('open');
     }
-        
+
     function EditBookmark(event)
     {
         let bookmarkNode = event.currentTarget.parentElement;
@@ -536,9 +554,9 @@ function RandStr(length = 32) {
         let bookmarkID = bookmarkNode.getAttribute('bookmark-id');
         let currentName = "";
         let currentURL = "";
-        
+
         bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-        
+
         for (const folder of bookmarks)
         {
             if (folder.id === folderID)
@@ -555,7 +573,7 @@ function RandStr(length = 32) {
                 break;
             }
         }
-        
+
         bookmarkInfoModal.dialog('option', {
             appendTo: '#helperContainer',
             title: 'Edit bookmark',
@@ -570,11 +588,11 @@ function RandStr(length = 32) {
                     click: () => {
                         let name = bookmarkInfoModal.find('#bookmark_newName').val();
                         let url = bookmarkInfoModal.find('#bookmark_newURL').val();
-                        
+
                         if (name && url)
                         {
                             bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-                            
+
                             for (const folder of bookmarks)
                             {
                                 if (folder.id === folderID)
@@ -601,15 +619,15 @@ function RandStr(length = 32) {
         });
         bookmarkInfoModal.dialog('open');
     }
-    
+
     function RemoveBookmark(event)
     {
         let bookmarkNode = event.currentTarget.parentElement;
         let folderID = bookmarkNode.getAttribute('folder-id');
         let bookmarkID = bookmarkNode.getAttribute('bookmark-id');
-        
+
         bookmarks = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_BOOKMARKS));
-        
+
         for (const folder of bookmarks)
         {
             if (folder.id === folderID)
@@ -628,7 +646,7 @@ function RandStr(length = 32) {
             }
         }
     }
-    
+
     function AddHistory(event)
     {
         if (event.type === 'click' || (event.type === 'keydown' && event.which === 13))
@@ -638,7 +656,7 @@ function RandStr(length = 32) {
                 {
                     clearInterval(checkResultsLoaded);
                     history = JSON.parse(window.localStorage.getItem(STORAGE_HELPER_HISTORY));
-                    
+
                     if (history.length == 0 || history[history.length - 1].url !== window.location.href)
                     {
                         let inputs = $('input.multiselect__input');
@@ -651,19 +669,19 @@ function RandStr(length = 32) {
             }, 1000);
         }
     }
-    
+
     function GetFilters()
     {
         let filters = $('div.search-advanced-pane.brown div.filter-group.expanded div.filter.full-span:not(.disabled) div.filter-title');
         let filtersRegex = [];
-        
+
         for (const filter of filters)
         {
             let filterText = $(filter).contents()[1].textContent.trim();
             filterText = filterText.replace(/[\\+\\-]?#/g, '[\\+\\-]?[0-9.]+');
             filtersRegex.push(filterText);
         }
-        
+
         return filtersRegex;
     }
 })();
