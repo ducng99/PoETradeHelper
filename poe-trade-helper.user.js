@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      1.2.2.2
+// @version      1.3.1.0
 // @description  poe.com/trade help
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -221,6 +221,12 @@ function RandStr(length = 32) {
                 }
             }, 10);
         });
+        
+        // Make search button/controls sticky
+        $('div.controls').css('position', 'sticky')
+            .css('z-index', '2')
+            .css('bottom', '0px')
+            .css('background', '#00000099');
     }, 2000);
 
     setInterval(() => {
