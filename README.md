@@ -6,6 +6,8 @@ A script to help navigating PoE trade website a bit easier.
 - Pins
 - History
 - Highlight search filter
+- Automatically add ~ (tilda) when searching for filters (inexact filter search). To prevent this, use uppercase for first character.
+- Sticky search bar
 
 ## How to:
 1. Install [Tampermonkey](https://www.tampermonkey.net/)
