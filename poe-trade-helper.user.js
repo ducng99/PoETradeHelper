@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      2.0.2.0
+// @version      2.0.3.0
 // @description  PoE Trade helper script
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -28,12 +28,11 @@ unsafeWindow.SendGetRequest = function(url) {
 (function() {
     'use strict'
 
-    let helper = document.createElement('div');
-    helper.id = 'PoETradeHelper';
-    document.body.append(helper);
+    $('body').append('<div id="PoETradeHelper"></div>');
 
+    const version = '2.0.3';
     $('body').append(`
-    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.2/dist/index.js"></script>
-    <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.2/dist/vendor.js">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.2/dist/index.css">`);
+    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@${version}/dist/index.js"></script>
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@${version}/dist/vendor.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@${version}/dist/index.css">`);
 })();

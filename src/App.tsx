@@ -6,25 +6,34 @@ import { AddTilda, StickySearchButton } from './extensions/FiltersHelper';
 
 export default function App() {
     const [isOpen, setOpen] = useState(false);
+    let style: React.CSSProperties = {
+        height: 'fit-content'
+    }
     
     useEffect(() => {
-        toggleOpen();
+        ToggleOpen();
         AddTilda();
         StickySearchButton();
     }, []);
 
-    function toggleOpen() {
+    function ToggleOpen() {
         setOpen(!isOpen);
         
         const poeApp = document.querySelector<HTMLElement>('div#app > div.content');
         if (poeApp)
             poeApp.style.width = !isOpen ? 'calc(100% - var(--helper-width))' : '100%';
+            
+        style = {
+            height: !isOpen ? '100vh' : 'fit-content'
+        }
     }
 
     return (
-        <div className="PoETradeHelper" style={isOpen ? { height: '100vh' } : { height: 'fit-content' }}>
-            <button className="helper-btn" onClick={() => toggleOpen()}>Show/Hide</button>
+        <div>
+        <div className="PoETradeHelper" style={style}>
+            <button className="helper-btn" onClick={() => ToggleOpen()}>Show/Hide</button>
             <TabsContainer isOpen={isOpen} />
+        </div>
         </div>
     )
 }
