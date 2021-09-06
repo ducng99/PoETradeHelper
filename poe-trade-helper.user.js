@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PoE Trade Helper
 // @namespace    maxhyt.poetradehelper
-// @version      2.0.0.0
+// @version      2.0.1.0
 // @description  PoE Trade helper script
 // @author       Maxhyt
 // @match        https://www.pathofexile.com/trade*
@@ -20,7 +20,6 @@ unsafeWindow.SendGetRequest = function(url) {
             },
             onerror: function(err) {
                 throw err;
-                resolve();
             }
         });
     });
@@ -34,7 +33,7 @@ unsafeWindow.SendGetRequest = function(url) {
     document.body.append(helper);
 
     $('body').append(`
-    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0/dist/index.js"></script>
-    <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0/dist/vendor.js">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0/dist/index.css">`);
+    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.01/dist/index.js"></script>
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.1/dist/vendor.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.1/dist/index.css">`);
 })();
