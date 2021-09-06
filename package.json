@@ -5,7 +5,7 @@
   "license": "AGPL-3.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node create-script.mjs",
+    "build": "tsc && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
