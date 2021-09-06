@@ -33,7 +33,7 @@ unsafeWindow.SendGetRequest = function(url) {
     document.body.append(helper);
 
     $('body').append(`
-    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.01/dist/index.js"></script>
+    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.1/dist/index.js"></script>
     <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.1/dist/vendor.js">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ducng99/PoETradeHelper@2.0.1/dist/index.css">`);
 })();
