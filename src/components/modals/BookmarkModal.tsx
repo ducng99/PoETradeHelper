@@ -13,13 +13,13 @@ interface IProps {
 
 export default function BookmarkModal(props: IProps) {
     const [name, setName] = useState(props.bookmark ? props.bookmark.name : '');
-    const [url, setURL] = useState(props.bookmark ? props.bookmark.url : '');
+    const [url, setURL] = useState(props.bookmark ? props.bookmark.url : window.location.href);
     const [color, setColor] = useState(props.bookmark ? props.bookmark.bgColor : '#222');
 
     useEffect(() => {
         let inputs = $<HTMLInputElement>('input.multiselect__input');
-        setName(inputs[0].value ? inputs[0].value : (inputs[1].value === 'Any' ? '' : inputs[1].value));
-        setURL(window.location.href);
+        if (!props.bookmark)
+            setName(inputs[0].value ? inputs[0].value : (inputs[1].value === 'Any' ? '' : inputs[1].value));
     }, [])
 
     function handleSubmit() {

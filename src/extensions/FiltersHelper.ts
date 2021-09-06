@@ -19,7 +19,12 @@ export async function AddTilda() {
     while (!seachPanel) await Sleep(1000);
 
     seachPanel.addEventListener('click', async () => {
-        while (!document.activeElement) await Sleep(50);
+        let tries = 0;
+
+        while (!document.activeElement && ++tries < 10) {
+            await Sleep(10);
+        }
+        
         let inputDOM = document.activeElement as HTMLInputElement;
         if (inputDOM && inputDOM.classList.contains('multiselect__input') && !inputDOM.classList.contains('helper_checked')) {
             inputDOM.classList.add('helper_checked');
@@ -33,18 +38,22 @@ export async function AddTilda() {
             });
         }
     });
+
+    console.log('Add tilda done!');
 }
 
 export async function StickySearchButton() {
     let searchBar = $('div.search-panel > div.controls');
-    
-    while (!searchBar.length) {
-        await Sleep(1000);
+
+    while (searchBar.length < 1) {
+        await Sleep(500);
         searchBar = $('div.search-panel > div.controls');
     }
-    
+
     searchBar.css('position', 'sticky')
         .css('z-index', '2')
         .css('bottom', '0px')
-        .css('background-color', '#00000099');
+        .css('background-color', 'rgba(0,0,0,0.8)');
+
+    console.log('Sticky search done!');
 }
