@@ -1,0 +1,39 @@
+@import url(https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css);
+@import './bootstrap.scss';
+
+:root {
+    --helper-width: 374px;
+}
+
+.PoETradeHelper {
+    --border-color: #4c4c7d;
+    --background-color: #0f304d;
+    --background-color-hover: #133d62;
+    --text-color: #e2e2e2;
+
+    font-family: "FontinSmallcaps", Helvetica, sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: #000b;
+    width: var(--helper-width);
+    height: fit-content;
+
+    hr {
+        color: var(--text-color);
+    }
+
+    button.helper-btn {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        padding: 0.2em 0.4em;
+        margin: 0.2em 0.1em;
+
+        &:hover {
+            background-color: var(--background-color-hover);
+        }
+    }
+}

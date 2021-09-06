@@ -1,0 +1,34 @@
+.PoETradeHelper {
+    .accordion-item {
+        background-color: black;
+        border: 1px solid var(--border-color);
+    }
+
+    .accordion-button {
+        border: 1px solid var(--border-color);
+        font-size: 1.5rem;
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        &::after {
+            margin-left: 0px;
+            width: 0px;
+        }
+    }
+
+    .accordion-button,
+    .accordion-item {
+        border-radius: 0% !important;
+    }
+
+    .accordion-body {
+        color: var(--text-color);
+    }
+
+    .accordion-body,
+    .accordion-button {
+        padding: 0.2em 0.4em;
+    }
+}
