@@ -11,7 +11,7 @@
     --background-color-hover: #133d62;
     --text-color: #e2e2e2;
 
-    font-family: "FontinSmallcaps", Helvetica, sans-serif !important;
+    font-family: "FontinSmallcaps", Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -31,6 +31,7 @@
         border: 1px solid var(--border-color);
         padding: 0.2em 0.4em;
         margin: 0.2em 0.1em;
+        font-size: 1.1em;
 
         &:hover {
             background-color: var(--background-color-hover);
@@ -44,4 +45,41 @@ div.search-panel > div.controls {
     z-index: 2;
     bottom: 0px;
     background-color: #0009;
+}
+
+// Bootstrap modify
+.modal-dialog {
+    color: #e2e2e2;
+    font-family: "FontinSmallcaps", Helvetica, sans-serif;
+    font-size: 1.3em;
+    
+    .modal-content {
+        background-color: #121212;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #404040;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #404040;
+    }
+    
+    .modal-title {
+        font-size: 1.3em;
+    }
+    
+    .btn {
+        font-size: .9em;
+        background-color: #0f304d;
+        border: 1px solid #4c4c7d;
+    }
+    
+    .form-control {
+        margin-top: .5rem;
+        margin-bottom: 2rem;
+        font-size: 1em;
+        background-color: #1e2124;
+        color: #fff;
+    }
 }

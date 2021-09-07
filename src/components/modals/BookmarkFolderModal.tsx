@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { Button, Form, Modal } from "react-bootstrap";
 import { BookmarkFolderModel, BookmarkModel } from "../../models/BookmarkModels";
 import { HashSet } from "../../HashSet";
-import { BookmarkIDComparer } from "../tabs/Bookmarks";
 
 interface IProps {
     show: boolean,

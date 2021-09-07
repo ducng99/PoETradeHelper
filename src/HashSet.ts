@@ -3,7 +3,7 @@
  */
 export type ComparerFunction<T> = (a: T, b: T) => boolean;
 
-export class HashSet<T> extends Array<T> {
+export class HashSet<T = any> extends Array<T> {
     constructor(...items: T[]) {
         super(...items);
     }
@@ -14,7 +14,7 @@ export class HashSet<T> extends Array<T> {
      * @returns the length of the array after adding
      */
     s_push(comparer: ComparerFunction<T>, ...items: T[]) {
-        const uniqueItems = items.filter(i => this.findIndex(n => !comparer(i, n)) === -1);
+        const uniqueItems = items.filter(i => !this.find(n => comparer(i, n)));
         this.push(...uniqueItems);
 
         return this.length;

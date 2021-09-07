@@ -3,16 +3,21 @@ import './App.scss'
 import 'bootstrap'
 import TabsContainer from './components/TabsContainer'
 import { AddTilda } from './extensions/FiltersHelper';
+import Settings from './models/HelperSettings';
 
 export default function App() {
     const [isOpen, setOpen] = useState(false);
-    let style: React.CSSProperties = {
-        height: 'fit-content'
-    }
+    const [style, setStyle] = useState<React.CSSProperties>({
+        height: 'fit-content',
+        fontSize: Settings.Instance.fontSize + 'em',
+    });
 
     useEffect(() => {
         ToggleOpen();
         AddTilda();
+        
+        document.body.setAttribute('style', `--helper-width: ${Settings.Instance.helperWidth}px`);
+        Settings.Instance.AddListener(handleSettingsUpdate);
     }, []);
 
     function ToggleOpen() {
@@ -22,9 +27,12 @@ export default function App() {
         if (poeApp)
             poeApp.style.width = !isOpen ? 'calc(100% - var(--helper-width))' : '100%';
 
-        style = {
-            height: !isOpen ? '100vh' : 'fit-content'
-        }
+        setStyle(Object.assign({ ...style }, { height: !isOpen ? '100vh' : 'fit-content' }));
+    }
+
+    function handleSettingsUpdate() {
+        setStyle(Object.assign({ ...style }, { fontSize: Settings.Instance.fontSize + 'em' }));
+        document.body.setAttribute('style', `--helper-width: ${Settings.Instance.helperWidth}px`);
     }
 
     return (

@@ -18,16 +18,24 @@ export default function TabsContainer(props: IProps) {
         <div id="helper-tabs" style={style}>
             <ul className="nav nav-tabs px-1" role="tablist">
                 <li className="nav-item" role="presentation">
-                    <button className="nav-link active" id="bookmark-tab" data-bs-toggle="tab" data-bs-target="#bookmark" type="button" role="tab" aria-controls="bookmark" aria-selected="true">Bookmarks</button>
+                    <button className="nav-link active" id="bookmark-tab" data-bs-toggle="tab" data-bs-target="#bookmark" type="button" role="tab" aria-controls="bookmark" aria-selected="true">
+                        <i className="bi bi-bookmark-star-fill"></i>&#32;Bookmarks
+                    </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="pins-tab" data-bs-toggle="tab" data-bs-target="#pins" type="button" role="tab" aria-controls="pins" aria-selected="false">Pins</button>
+                    <button className="nav-link" id="pins-tab" data-bs-toggle="tab" data-bs-target="#pins" type="button" role="tab" aria-controls="pins" aria-selected="false">
+                        <i className="bi bi-pin-angle-fill"></i>&#32;Pins
+                    </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">History</button>
+                    <button className="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                        <i className="bi bi-clock-history"></i>&#32;History
+                    </button>
                 </li>
                 <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
+                    <button className="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">
+                        <i className="bi bi-gear-fill"></i>&#32;Settings
+                    </button>
                 </li>
             </ul>
             <div className="tab-content">
