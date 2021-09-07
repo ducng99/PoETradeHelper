@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from 'uuid'
 import { Button, Form, Modal } from "react-bootstrap";
-import { BookmarkFolderModel } from "../../models/BookmarkModels";
+import { BookmarkFolderModel, BookmarkModel } from "../../models/BookmarkModels";
+import { HashSet } from "../../HashSet";
+import { BookmarkIDComparer } from "../tabs/Bookmarks";
 
 interface IProps {
     show: boolean,
@@ -27,7 +29,7 @@ export default function BookmarkFolderModal(props: IProps) {
                     id: uuidv4(),
                     name,
                     bgColor: color,
-                    bookmarks: []
+                    bookmarks: new HashSet<BookmarkModel>()
                 });
             }
             props.setShow(false);

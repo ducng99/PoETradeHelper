@@ -8,7 +8,7 @@ export function GetContrastTextColor(color: string) {
         return brightness >= (0xff / 2) ? '#000' : '#e2e2e2'
     }
 
-    return '';
+    return '#000';
 }
 
 export function Sleep(milisec: number) {
@@ -40,12 +40,23 @@ export function PrettyTime(time: number) {
     return 'a long time ago';
 }
 
-export function ReadFile(file: File): Promise<string | ArrayBuffer | null> {
+export function ReadFile(file: File): Promise<string | undefined> {
     return new Promise(resolve => {
         let fr = new FileReader();
         fr.onload = (e) => {
-            resolve(fr.result);
+            if (fr.result) {
+                resolve(fr.result.toString());
+            }
         };
         fr.readAsText(file);
     });
+}
+
+export function WriteFile(name: string, content: string) {
+    const dummy = document.createElement('a');
+    dummy.setAttribute('href', "data:text/plain;charset=utf-8;base64," + btoa(content));
+    dummy.setAttribute('download', name);
+    document.body.appendChild(dummy);
+    dummy.click();
+    document.body.removeChild(dummy);
 }

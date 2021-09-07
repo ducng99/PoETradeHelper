@@ -4,6 +4,7 @@ import { BookmarkFolderModel, BookmarkModel } from "../../../models/BookmarkMode
 import { GetContrastTextColor } from "../../../Utils";
 import BookmarkFolderModal from "../../modals/BookmarkFolderModal";
 import BookmarkModal from "../../modals/BookmarkModal";
+import { BookmarkIDComparer } from "../Bookmarks";
 import Bookmark from "./Bookmark";
 import './BookmarkFolder.scss'
 
@@ -24,7 +25,7 @@ export default function BookmarkFolder(props: IProps) {
     }
 
     function AddBookmark(bookmark: BookmarkModel) {
-        props.folder.bookmarks.push(bookmark);
+        props.folder.bookmarks.s_push(BookmarkIDComparer, bookmark);
         props.updateBookmarkFolder(props.folder);
     }
 
@@ -64,15 +65,15 @@ export default function BookmarkFolder(props: IProps) {
                     <button className="helper-btn" onClick={() => props.moveBookmarkFolder(props.folder, 1)}><i className="bi bi-chevron-down"></i></button>
                     <button className="helper-btn" onClick={() => setShowBookmarkFolderModal(true)}><i className="bi bi-pencil-fill"></i></button>
                     <button className="helper-btn" onClick={() => props.deleteBookmarkFolder(props.folder)}><i className="bi bi-trash"></i></button>
-                    
-                    { showBookmarkFolderModal && <BookmarkFolderModal show={showBookmarkFolderModal} setShow={setShowBookmarkFolderModal} editBookmarkFolder={props.updateBookmarkFolder} bookmarkFolder={props.folder} />}
+
+                    {showBookmarkFolderModal && <BookmarkFolderModal show={showBookmarkFolderModal} setShow={setShowBookmarkFolderModal} editBookmarkFolder={props.updateBookmarkFolder} bookmarkFolder={props.folder} />}
                 </button>
             </h2>
             <div id={"content_" + props.folder.id} className="accordion-collapse collapse" aria-labelledby={"header_" + props.folder.id}>
                 <div className="accordion-body">
                     {
                         props.folder.bookmarks.map(bm =>
-                            <Bookmark key={bm.id} bookmark={bm} deleteBookmark={DeleteBookmark} moveBookmark={MoveBookmark} editBookmark={EditBookmark}/>
+                            <Bookmark key={bm.id} bookmark={bm} deleteBookmark={DeleteBookmark} moveBookmark={MoveBookmark} editBookmark={EditBookmark} />
                         )
                     }
                     <button className="helper-btn w-100" onClick={() => setShowBookmarkModal(true)}>Add new bookmark</button>
