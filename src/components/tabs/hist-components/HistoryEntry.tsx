@@ -11,7 +11,7 @@ export default function HistoryEntry(props: IProps) {
 
 
     return (
-        <div history-id={props.entry.id} className="history-entry">
+        <div className="history-entry">
             <a href={props.entry.url} style={{ flexGrow: 1 }}>
                 <div className="d-flex">
                     <b className="history-title">{props.entry.title}</b>

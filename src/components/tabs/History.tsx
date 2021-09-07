@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Inject from "../../extensions/HistoryHelper";
 import { HistoryEntryModel } from '../../models/History'
 import HistoryEntry from "./hist-components/HistoryEntry";
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import Globals from "../../Globals";
 
 export default function HistoryTab() {
@@ -19,7 +19,7 @@ export default function HistoryTab() {
         else {
             window.localStorage.setItem(Globals.STORAGE_HELPER_HISTORY, JSON.stringify(histories.current));
         }
-        
+
         Inject(AddHistory);
     }, []);
 
@@ -39,7 +39,7 @@ export default function HistoryTab() {
                             url: window.location.href,
                             time: Date.now()
                         });
-                        
+
                         window.localStorage.setItem(Globals.STORAGE_HELPER_HISTORY, JSON.stringify(histories.current));
                         ForceUpdate();
                     }
@@ -48,8 +48,16 @@ export default function HistoryTab() {
         }
     }
 
+    function ClearHistory() {
+        histories.current.splice(0, histories.current.length);
+        window.localStorage.setItem(Globals.STORAGE_HELPER_HISTORY, JSON.stringify(histories.current));
+        ForceUpdate();
+    }
+
     return (
         <div>
+            <button className="helper-btn" onClick={ClearHistory}>Clear</button>
+            <hr />
             {
                 histories.current.slice().reverse().map(entry =>
                     <HistoryEntry entry={entry} />
