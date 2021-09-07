@@ -14,7 +14,7 @@ interface IProps {
 export default function BookmarkModal(props: IProps) {
     const [name, setName] = useState(props.bookmark ? props.bookmark.name : '');
     const [url, setURL] = useState(props.bookmark ? props.bookmark.url : window.location.href);
-    const [color, setColor] = useState(props.bookmark ? props.bookmark.bgColor : '#222');
+    const [color, setColor] = useState(props.bookmark ? props.bookmark.bgColor : '#222222');
 
     useEffect(() => {
         let inputs = $<HTMLInputElement>('input.multiselect__input');
@@ -49,16 +49,16 @@ export default function BookmarkModal(props: IProps) {
             </Modal.Header>
             <Modal.Body>
                 <Form.Group className="mb-3">
-                    <Form.Label>Name:</Form.Label>
-                    <Form.Control value={name} onChange={event => setName(event.currentTarget.value)} />
+                    <Form.Label htmlFor="add_bookmark_name">Name:</Form.Label>
+                    <Form.Control id="add_bookmark_name" defaultValue={name} onChange={event => setName(event.currentTarget.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>URL:</Form.Label>
-                    <Form.Control value={url} onChange={event => setURL(event.currentTarget.value)} />
+                    <Form.Label htmlFor="add_bookmark_url">URL:</Form.Label>
+                    <Form.Control id="add_bookmark_url" defaultValue={url} onChange={event => setURL(event.currentTarget.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Background color:</Form.Label>
-                    <Form.Control value={color} type="color" onInput={event => setColor(event.currentTarget.value)} />
+                    <Form.Label htmlFor="add_bookmark_color">Background color:</Form.Label>
+                    <Form.Control id="add_bookmark_color" defaultValue={color} type="color" onInput={event => setColor(event.currentTarget.value)} />
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>

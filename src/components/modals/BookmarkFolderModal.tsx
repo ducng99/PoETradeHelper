@@ -41,18 +41,16 @@ export default function BookmarkFolderModal(props: IProps) {
             </Modal.Header>
             <Modal.Body>
                 <Form.Group className="mb-3">
-                    <Form.Label>Name:</Form.Label>
-                    <Form.Control value={name} onChange={event => setName(event.currentTarget.value)} />
+                    <Form.Label htmlFor="add_bookmarkFolder_name">Name:</Form.Label>
+                    <Form.Control id="add_bookmarkFolder_name" defaultValue={name} onChange={event => setName(event.currentTarget.value)} />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Background color:</Form.Label>
-                    <Form.Control value={color} type="color" onInput={event => setColor(event.currentTarget.value)} />
+                    <Form.Label htmlFor="add_bookmarkFolder_color">Background color:</Form.Label>
+                    <Form.Control id="add_bookmarkFolder_color" defaultValue={color} type="color" onInput={event => setColor(event.currentTarget.value)} />
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" onClick={handleSubmit}>
-                    {props.bookmarkFolder ? 'Save' : 'Add'}
-                </Button>
+                <Button variant="primary" onClick={handleSubmit}>{props.bookmarkFolder ? 'Save' : 'Add'}</Button>
             </Modal.Footer>
         </Modal>
     )
