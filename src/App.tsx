@@ -9,30 +9,42 @@ export default function App() {
     const [isOpen, setOpen] = useState(false);
     const [style, setStyle] = useState<React.CSSProperties>({
         height: 'fit-content',
-        fontSize: Settings.Instance.fontSize + 'em',
+        fontSize: `${Settings.Instance.fontSize}em`,
+        width: `${Settings.Instance.helperWidth}px`
     });
 
     useEffect(() => {
         ToggleOpen();
         AddTilda();
-        
-        document.body.setAttribute('style', `--helper-width: ${Settings.Instance.helperWidth}px`);
+
         Settings.Instance.AddListener(handleSettingsUpdate);
     }, []);
 
     function ToggleOpen() {
-        setOpen(!isOpen);
-
         const poeApp = document.querySelector<HTMLElement>('div#app > div.content');
         if (poeApp)
-            poeApp.style.width = !isOpen ? 'calc(100% - var(--helper-width))' : '100%';
+            poeApp.style.width = !isOpen ? `calc(100% - ${Settings.Instance.helperWidth}px)` : '100%';
 
-        setStyle(Object.assign({ ...style }, { height: !isOpen ? '100vh' : 'fit-content' }));
+        // Create new variable of isOpen to avoid setState stashing/queue/merge or whatever
+        const tmpIsOpen = new Boolean(isOpen);
+        setStyle(prev => {
+            prev.height = !tmpIsOpen ? '100vh' : 'fit-content';
+            return prev;
+        });
+        setOpen(prev => !prev);
     }
 
     function handleSettingsUpdate() {
-        setStyle(Object.assign({ ...style }, { fontSize: Settings.Instance.fontSize + 'em' }));
-        document.body.setAttribute('style', `--helper-width: ${Settings.Instance.helperWidth}px`);
+        setStyle(prev => {
+            const newStyle = { ...prev }
+            newStyle.fontSize = `${Settings.Instance.fontSize}em`;
+            newStyle.width = `${Settings.Instance.helperWidth}px`;
+            return newStyle;
+        });
+
+        const poeApp = document.body.querySelector<HTMLElement>('div#app > div.content');
+        if (poeApp)
+            poeApp.style.width = `calc(100% - ${Settings.Instance.helperWidth}px)`;
     }
 
     return (

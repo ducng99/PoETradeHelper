@@ -6,6 +6,7 @@ export default async function Inject(AddHistory: Function) {
     
     while (!searchBtn) {
         await Sleep(1000);
+        searchBtn = document.body.querySelector<HTMLButtonElement>('button.search-btn');
     }
     
     searchBtn.addEventListener('click', <any>AddHistory);

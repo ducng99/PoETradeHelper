@@ -30,7 +30,7 @@ export default function SettingsTab() {
             </Form.Group>
             <Form.Group>
                 <Form.Label>Width:</Form.Label>&#32;{helperWidth}px
-                <Form.Control type="number" min={300} max={600} step={10} defaultValue={helperWidth} onChange={UpdateHelperWidth} />
+                <Form.Control type="number" step={10} defaultValue={helperWidth} onChange={UpdateHelperWidth} />
             </Form.Group>
         </>
     )
