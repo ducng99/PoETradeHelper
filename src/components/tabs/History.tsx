@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Inject from "../../extensions/HistoryHelper";
 import { HistoryEntryModel } from '../../models/History'
 import HistoryEntry from "./hist-components/HistoryEntry";
-import { v4 as uuidv4 } from 'uuid'
 import Globals from "../../Globals";
 
 export default function HistoryTab() {
@@ -34,7 +33,6 @@ export default function HistoryTab() {
                         let item = inputs[0].value ? inputs[0].value : inputs[1].value;
 
                         histories.current.push({
-                            id: uuidv4(),
                             title: item,
                             url: window.location.href,
                             time: Date.now()

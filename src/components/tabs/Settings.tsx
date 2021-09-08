@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import Settings from "../../models/HelperSettings";
 
 export default function SettingsTab() {
@@ -29,8 +29,11 @@ export default function SettingsTab() {
                 <Form.Range min={0.8} max={2} step={0.05} defaultValue={fontSize} onChange={UpdateFontSize} />
             </Form.Group>
             <Form.Group>
-                <Form.Label>Width:</Form.Label>&#32;{helperWidth}px
-                <Form.Control type="number" step={10} defaultValue={helperWidth} onChange={UpdateHelperWidth} />
+                <Form.Label>Width:</Form.Label>
+                <InputGroup>
+                    <Form.Control type="number" step={10} defaultValue={helperWidth} onChange={UpdateHelperWidth} />
+                    <InputGroup.Text>px</InputGroup.Text>
+                </InputGroup>
             </Form.Group>
         </>
     )

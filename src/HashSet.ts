@@ -4,10 +4,6 @@
 export type ComparerFunction<T> = (a: T, b: T) => boolean;
 
 export class HashSet<T = any> extends Array<T> {
-    constructor(...items: T[]) {
-        super(...items);
-    }
-
     /**
      * Appends unique items to set, others will not be added
      * @param items new elements to add to the set

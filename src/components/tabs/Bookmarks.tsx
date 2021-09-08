@@ -100,7 +100,7 @@ export default function BookmarksTab() {
         <>
             <div className="d-flex">
                 <button className="helper-btn me-auto" onClick={handleShowAddBookmarkFolder}>Create a folder</button>
-                <input ref={importFileRef} type="file" style={{ display: 'none' }} onChange={ImportBookmarks} />
+                <input ref={importFileRef} type="file" accept=".json" style={{ display: 'none' }} onChange={ImportBookmarks} />
                 <button className="helper-btn" onClick={() => importFileRef.current?.click()}>Import</button>
                 <button className="helper-btn" onClick={ExportBookmarks}>Export</button>
             </div>
