@@ -1,3 +1,5 @@
+import { BookmarkFolderModel, BookmarkModel } from "./models/BookmarkModels";
+
 export function GetContrastTextColor(color: string) {
     if (color && color.length === 7) {
         const r = parseInt(color.substr(1, 2), 16);
@@ -59,4 +61,12 @@ export function WriteFile(name: string, content: string) {
     document.body.appendChild(dummy);
     dummy.click();
     document.body.removeChild(dummy);
+}
+
+export function UniquePush<T = any>(array: Array<T>, ...items: Array<T>) {
+    const tmp = [...array];
+    const uniques = items.filter(a => !array.find(b => (a as any).id === (b as any).id));
+    tmp.push(...uniques);
+
+    return tmp;
 }

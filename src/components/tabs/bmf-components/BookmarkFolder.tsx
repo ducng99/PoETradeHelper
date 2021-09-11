@@ -1,10 +1,9 @@
 import { arrayMoveMutable } from "array-move";
 import React, { useState } from "react";
 import { BookmarkFolderModel, BookmarkModel } from "../../../models/BookmarkModels";
-import { GetContrastTextColor } from "../../../Utils";
+import { GetContrastTextColor, UniquePush } from "../../../Utils";
 import BookmarkFolderModal from "../../modals/BookmarkFolderModal";
 import BookmarkModal from "../../modals/BookmarkModal";
-import { BookmarkIDComparer } from "../Bookmarks";
 import Bookmark from "./Bookmark";
 import './BookmarkFolder.scss'
 
@@ -25,7 +24,7 @@ export default function BookmarkFolder(props: IProps) {
     }
 
     function AddBookmark(bookmark: BookmarkModel) {
-        props.folder.bookmarks.s_push(BookmarkIDComparer, bookmark);
+        props.folder.bookmarks = UniquePush(props.folder.bookmarks, bookmark);
         props.updateBookmarkFolder(props.folder);
     }
 
