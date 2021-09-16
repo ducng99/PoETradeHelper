@@ -1,5 +1,5 @@
 import { arrayMoveMutable } from "array-move";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, MouseEvent } from "react";
 import Globals from "../../Globals";
 import { BookmarkFolderModel } from "../../models/BookmarkModels";
 import { ReadFile, UniquePush, WriteFile } from "../../Utils";
@@ -21,7 +21,8 @@ export default function BookmarksTab() {
         }
     }, [])
 
-    function handleShowAddBookmarkFolder() {
+    function handleShowAddBookmarkFolder(event: MouseEvent<HTMLButtonElement>) {
+        event.stopPropagation();
         setShowModal(true);
     }
 
@@ -88,7 +89,8 @@ export default function BookmarksTab() {
         }
     }
 
-    function ExportBookmarks() {
+    function ExportBookmarks(event: MouseEvent<HTMLButtonElement>) {
+        event.stopPropagation();
         WriteFile('PoETradeHelper_Bookmarks.json', JSON.stringify(bookmarkFolders));
     }
 
@@ -97,7 +99,7 @@ export default function BookmarksTab() {
             <div className="d-flex">
                 <button className="helper-btn me-auto" onClick={handleShowAddBookmarkFolder}>Create a folder</button>
                 <input ref={importFileRef} type="file" accept=".json" style={{ display: 'none' }} onChange={ImportBookmarks} />
-                <button className="helper-btn" onClick={() => importFileRef.current?.click()}>Import</button>
+                <button className="helper-btn" onClick={(e) => { e.stopPropagation(); importFileRef.current?.click() }}>Import</button>
                 <button className="helper-btn" onClick={ExportBookmarks}>Export</button>
             </div>
             <hr />

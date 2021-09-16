@@ -60,10 +60,10 @@ export default function BookmarkFolder(props: IProps) {
                 <button className="accordion-button collapsed" type="button" style={style} data-bs-toggle="collapse" data-bs-target={"#content_" + props.folder.id} aria-expanded="false" aria-controls={"content_" + props.folder.id}>
                     <div className="me-auto">{props.folder.name}</div>
 
-                    <button className="helper-btn" onClick={() => props.moveBookmarkFolder(props.folder, -1)}><i className="bi bi-chevron-up"></i></button>
-                    <button className="helper-btn" onClick={() => props.moveBookmarkFolder(props.folder, 1)}><i className="bi bi-chevron-down"></i></button>
-                    <button className="helper-btn" onClick={() => setShowBookmarkFolderModal(true)}><i className="bi bi-pencil-fill"></i></button>
-                    <button className="helper-btn" onClick={() => props.deleteBookmarkFolder(props.folder)}><i className="bi bi-trash"></i></button>
+                    <button className="helper-btn" onClick={(e) => { e.stopPropagation(); props.moveBookmarkFolder(props.folder, -1) }}><i className="bi bi-chevron-up"></i></button>
+                    <button className="helper-btn" onClick={(e) => { e.stopPropagation(); props.moveBookmarkFolder(props.folder, 1) }}><i className="bi bi-chevron-down"></i></button>
+                    <button className="helper-btn" onClick={(e) => { e.stopPropagation(); setShowBookmarkFolderModal(true) }}><i className="bi bi-pencil-fill"></i></button>
+                    <button className="helper-btn" onClick={(e) => { e.stopPropagation(); props.deleteBookmarkFolder(props.folder) }}><i className="bi bi-trash"></i></button>
 
                     {showBookmarkFolderModal && <BookmarkFolderModal show={showBookmarkFolderModal} setShow={setShowBookmarkFolderModal} editBookmarkFolder={props.updateBookmarkFolder} bookmarkFolder={props.folder} />}
                 </button>
